@@ -1,0 +1,50 @@
+from datetime import date
+
+class MembroAcademia:
+    _ultimo_id = 0
+    
+    def __init__(self, nome: str, nascimento: date, nacionalidade: str):
+        MembroAcademia._ultimo_id += 1
+        self.id = MembroAcademia._ultimo_id
+        self.nome = nome
+        self.nascimento = nascimento
+        self.nacionalidade = nacionalidade
+        self.votos_realizados = set()
+
+class Filme:
+    def __init__(self, titulo: str, diretor: str, ano: int, categorias: list):
+        self.titulo = titulo
+        self.diretor = diretor
+        self.ano = ano
+        self.categorias = categorias
+
+class Ator:
+    def __init__(self, nome: str, nacionalidade: str, filme: str):
+        self.nome = nome
+        self.nacionalidade = nacionalidade
+        self.filme = filme
+
+class Diretor:
+    def __init__(self, nome: str, nacionalidade: str, filme: str):
+        self.nome = nome
+        self.nacionalidade = nacionalidade
+        self.filme = filme
+
+class Categoria:
+    def __init__(self, nome: str, tipo: str):
+        self.nome = nome
+        self.tipo = tipo  # 'filme', 'ator' ou 'diretor'
+
+class Indicacao:
+    def __init__(self, categoria: Categoria, ano: int, indicado):
+        self.categoria = categoria
+        self.ano = ano
+        self.indicado = indicado
+
+class Voto:
+    def __init__(self, categoria: Categoria, membro: MembroAcademia, indicado):
+        self.categoria = categoria
+        self.membro = membro
+        self.indicado = indicado
+
+
