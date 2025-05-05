@@ -9,7 +9,7 @@ class MembroAcademia:
         self.nome = nome
         self.nascimento = nascimento
         self.nacionalidade = nacionalidade
-        self.votos_realizados = set()
+        self.votos_realizados = set() 
 
 class Filme:
     def __init__(self, titulo: str, diretor: str, ano: int, categorias: list):
