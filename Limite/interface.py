@@ -1,6 +1,6 @@
 from datetime import date
 from sistema_oscar import SistemaOscar
-from entidades import *
+from Entidades.entidades import *
 
 class Interface:
     def __init__(self, sistema: SistemaOscar):
