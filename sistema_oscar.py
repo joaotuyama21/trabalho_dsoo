@@ -27,7 +27,6 @@ class SistemaOscar:
     def registrar_voto(self, categoria: Categoria, membro: MembroAcademia, indicado):
         if categoria.nome in membro.votos_realizados:
             raise ValueError("Membro já votou nesta categoria")
-
         self.votos.append(Voto(categoria, membro, indicado))
         membro.votos_realizados.add(categoria.nome)
 
@@ -44,14 +43,12 @@ class SistemaOscar:
         for voto in self.votos:
             if categoria and voto.categoria.nome != categoria:
                 continue
-            if ano and voto.indicado.ano != ano:
+            if ano and hasattr(voto.indicado, 'ano') and voto.indicado.ano != ano:
                 continue
-
             if isinstance(voto.indicado, Diretor) or isinstance(voto.indicado, Ator):
-                chave = f"{voto.indicado.nome}"    
+                chave = f"{voto.indicado.nome}"
             else:
                 chave = f"{voto.indicado.titulo}"
-
             votos_por_indicado[chave] = votos_por_indicado.get(chave, 0) + 1
         return votos_por_indicado
 
