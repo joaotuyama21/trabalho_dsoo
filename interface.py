@@ -16,9 +16,7 @@ class Interface:
             print("5. Remover Membro")
             print("6. Listar Membros")
             print("0. Sair")
-
             opcao = input("Escolha: ").strip()
-
             match opcao:
                 case "1": self.registrar_voto()
                 case "2": self.gerar_relatorio()
@@ -35,68 +33,84 @@ class Interface:
         print("2. Ator")
         print("3. Diretor")
         escolha = input("Escolha o tipo: ").strip()
-
         match escolha:
             case "1": self.indicar_filme()
             case "2": self.indicar_ator()
             case "3": self.indicar_diretor()
             case _: print("Opção inválida!")
 
+    def solicitar_membro_valido(self):
+        if not self.sistema.membros:
+            print("Nenhum membro cadastrado. Cadastre um membro primeiro.")
+            return None
+        self.listar_membros()
+        try:
+            id_membro = int(input("Informe o ID do membro que fará a indicação: "))
+        except ValueError:
+            print("ID inválido.")
+            return None
+        membro = self.sistema.buscar_membro_por_id(id_membro)
+        if not membro:
+            print("Membro não encontrado!")
+            return None
+        return membro
+
     def indicar_filme(self):
         print("\n--- Indicação de Filme ---")
+        membro = self.solicitar_membro_valido()
+        if not membro:
+            return
         titulo = input("Título do Filme: ").strip()
         ano = int(input("Ano de Lançamento: "))
         diretor = input("Diretor: ").strip()
-
         if not any(d.nome == diretor for d in self.sistema.diretores):
             nacionalidade = input(f"Nacionalidade de {diretor}: ").strip()
             self.sistema.diretores.append(Diretor(diretor, nacionalidade, titulo))
-
         novo_filme = Filme(titulo, diretor, ano, ["Melhor Filme"])
         self.sistema.filmes.append(novo_filme)
-
         categoria = next(c for c in self.sistema.categorias if c.nome == "Melhor Filme")
         self.sistema.indicacoes.append(Indicacao(categoria, ano, novo_filme))
-        print(f"\n✅ Filme '{titulo}' indicado com sucesso!")
+        print(f"\n✅ Filme '{titulo}' indicado com sucesso por '{membro.nome}'!")
 
     def indicar_ator(self):
         print("\n--- Indicação de Ator ---")
+        membro = self.solicitar_membro_valido()
+        if not membro:
+            return
         nome = input("Nome do Ator: ").strip()
         filme = input("Filme: ").strip()
         nacionalidade = input("Nacionalidade: ").strip()
-
         if not self.sistema.buscar_filme_por_titulo(filme):
             print("\n⚠️ Filme não cadastrado. O ator será indicado mesmo assim.")
             ano = int(input("Ano do Filme para a indicação: "))
         else:
             ano = self.sistema.buscar_filme_por_titulo(filme).ano
-
         self.sistema.atores.append(Ator(nome, nacionalidade, filme))
         categoria = next(c for c in self.sistema.categorias if c.nome == "Melhor Ator")
         self.sistema.indicacoes.append(Indicacao(categoria, ano, Ator(nome, nacionalidade, filme)))
-        print(f"\n✅ Ator '{nome}' indicado com sucesso!")
+        print(f"\n✅ Ator '{nome}' indicado com sucesso por '{membro.nome}'!")
 
     def indicar_diretor(self):
         print("\n--- Indicação de Diretor ---")
+        membro = self.solicitar_membro_valido()
+        if not membro:
+            return
         nome = input("Nome do Diretor: ").strip()
         filme = input("Filme: ").strip()
         nacionalidade = input("Nacionalidade: ").strip()
-
         if not self.sistema.buscar_filme_por_titulo(filme):
             print("\n⚠️ Filme não cadastrado. O diretor será indicado mesmo assim.")
             ano = int(input("Ano do Filme para a indicação: "))
         else:
             ano = self.sistema.buscar_filme_por_titulo(filme).ano
-
         self.sistema.diretores.append(Diretor(nome, nacionalidade, filme))
         categoria = next(c for c in self.sistema.categorias if c.nome == "Melhor Direção")
         self.sistema.indicacoes.append(Indicacao(categoria, ano, Diretor(nome, nacionalidade, filme)))
-        print(f"\n✅ Diretor '{nome}' indicado com sucesso!")
+        print(f"\n✅ Diretor '{nome}' indicado com sucesso por '{membro.nome}'!")
 
     def cadastrar_membro(self):
         print("\n--- Cadastro de Membro ---")
         nome = input("Nome Completo: ").strip()
-
         while True:
             try:
                 dia = int(input("Dia de Nascimento (DD): "))
@@ -106,9 +120,7 @@ class Interface:
                 break
             except ValueError as e:
                 print(f"Erro: {e}. Tente novamente.")
-
         nacionalidade = input("Nacionalidade: ").strip()
-
         novo_membro = MembroAcademia(nome, nascimento, nacionalidade)
         self.sistema.membros.append(novo_membro)
         print(f"\n✅ Membro '{nome}' cadastrado com ID {novo_membro.id}!")
@@ -118,14 +130,12 @@ class Interface:
         if not self.sistema.membros:
             print("Nenhum membro cadastrado.")
             return
-
         self.listar_membros()
         try:
             id_remover = int(input("Digite o ID do membro a ser removido: "))
         except ValueError:
             print("ID inválido.")
             return
-
         for i, membro in enumerate(self.sistema.membros):
             if membro.id == id_remover:
                 nome = membro.nome
@@ -139,7 +149,6 @@ class Interface:
         if not self.sistema.membros:
             print("Nenhum membro cadastrado.")
             return
-
         for membro in self.sistema.membros:
             nascimento_formatado = membro.nascimento.strftime("%d/%m/%Y")
             print(f"ID: {membro.id} | Nome: {membro.nome} | Nascimento: {nascimento_formatado} | Nacionalidade: {membro.nacionalidade}")
@@ -149,34 +158,28 @@ class Interface:
         if not self.sistema.membros:
             print("Nenhum membro cadastrado.")
             return
-
         try:
             id_membro = int(input("ID do Membro: "))
         except ValueError:
             print("ID inválido.")
             return
-
         membro = self.sistema.buscar_membro_por_id(id_membro)
         if not membro:
             print("Membro não encontrado!")
             return
-
         print("\nCategorias Disponíveis:")
         for i, cat in enumerate(self.sistema.categorias, 1):
             print(f"{i}. {cat.nome}")
-
         try:
             escolha = int(input("Escolha a categoria: ")) - 1
             categoria = self.sistema.categorias[escolha]
         except (ValueError, IndexError):
             print("Categoria inválida.")
             return
-
         indicacoes = self.sistema.buscar_indicacoes_por_categoria(categoria)
         if not indicacoes:
             print("Nenhum indicado nesta categoria.")
             return
-
         print("\nIndicados:")
         for i, ind in enumerate(indicacoes, 1):
             if isinstance(ind.indicado, Filme):
@@ -186,14 +189,12 @@ class Interface:
             else:
                 nome = str(ind.indicado)
             print(f"{i}. {nome}")
-
         try:
             escolha_ind = int(input("Escolha o indicado: ")) - 1
             indicado = indicacoes[escolha_ind].indicado
         except (ValueError, IndexError):
             print("Indicado inválido.")
             return
-
         try:
             self.sistema.registrar_voto(categoria, membro, indicado)
             print("\n✅ Voto registrado com sucesso!")
