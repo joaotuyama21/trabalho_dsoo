@@ -22,9 +22,9 @@ class ControladorSistema():
         lista_opcoes = {1:self.membros}
 
         while True:
-            opcao = self.telaSistema.exibir_menu_principal()
+            opcao = self.telaSistema.exibirMenuPrincipal()
             funcao = lista_opcoes[opcao]
             funcao()
 
-    def membros(self):
-        self.controladorMembroAcademia.exibir_menu_membros()
+    def menuMembros(self):
+        self.controladorMembroAcademia.exibirMenuMembros()

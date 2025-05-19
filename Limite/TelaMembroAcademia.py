@@ -1,7 +1,7 @@
 from Controle.ControladorMembroAcademia import ControladorMembroAcademia
 from datetime import date
 
-class TelaMembrosAcademia():
+class TelaMembroAcademia():
     def __init__(self, controladorMembrosAcademia: ControladorMembroAcademia):
         self.__controladorMembrosAcademia = controladorMembrosAcademia
 
@@ -9,7 +9,7 @@ class TelaMembrosAcademia():
     def controladorMembrosAcademia(self):
         return self.__controladorMembrosAcademia
 
-    def exibir_menu_membros(self):
+    def exibirMenuMembros(self):
         print("\n--- Membros da Academia ---")
         print("1. Incluir Membro")
         print("2. Remover Membro")
@@ -17,7 +17,7 @@ class TelaMembrosAcademia():
         print("0. Sair")
         return input("Escolha: ").strip()
     
-    def incluir_membro_info(self):
+    def incluirMembroInfo(self):
         print("\n--- Cadastro de Membro ---")
         nome = input("Nome Completo: ").strip()
         while True:
@@ -31,3 +31,12 @@ class TelaMembrosAcademia():
                 print(f"Erro: {e}. Tente novamente.")
         nacionalidade = input("Nacionalidade: ").strip()
         return [nome, nascimento, nacionalidade]
+    
+    def delMembroInfo(self):
+        print("\n--- Remover Membro ---")
+        while True:
+            try:
+                id = int(input("Id do membro: ").strip())
+                return id
+            except ValueError as e:
+                print(f"Erro: {e}. Tente novamente.")

@@ -12,3 +12,7 @@ class MembroAcademia:
         self.__nacionalidade = nacionalidade
         self.__votosRealizados = set() 
         self.__indicacoesRealizadas = set()
+    
+    @property
+    def id(self):
+        return self.__id
