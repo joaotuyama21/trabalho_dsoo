@@ -1,7 +1,7 @@
-from Categoria import *
+import Categoria, MembroAcademia
 
 class Indicacao:
-    def __init__(self, categoria: Categoria, ano: int, indicado):
-        self.categoria = categoria
-        self.ano = ano
-        self.indicado = indicado
+    def __init__(self, indicado, categoria: Categoria, membroAcademia: MembroAcademia):
+        self.__categoria = categoria
+        self.__indicado = indicado
+        self.__membroAcademia = membroAcademia
