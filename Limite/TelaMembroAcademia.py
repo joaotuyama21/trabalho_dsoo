@@ -49,3 +49,9 @@ class TelaMembroAcademia(Tela):
         for i in atributos.keys():
             print(f"{i}. {atributos[i]}")
         return int(input("Selcione o atributo: "))
+    
+    def listarMembros(self, membros):
+        print("\n--- Membros da Academia ---")
+        for membro in membros:
+            print(f"{membro.id}. {membro.nome}")
+        input()

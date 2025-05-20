@@ -50,9 +50,8 @@ class ControladorMembroAcademia():
         self.telaMembroAcademia.mostraMensagem(f"\n✅ Membro '{membroRemovido.nome}' foi removdo com sucesso!")        
 
     def listarMembros(self):
-        self.telaMembroAcademia.mostraMensagem("--- Membros da Academia ---")
-        for membro in self.membrosAcademia:
-            self.telaMembroAcademia.mostraMensagem(f"{membro.id}. {membro.nome}")
+        self.telaMembroAcademia.listarMembros(self.membrosAcademia)
+        
 
     def verificarSeHaMembroDuplicado(self, copia: MembroAcademia):
         for membro in self.membrosAcademia:
