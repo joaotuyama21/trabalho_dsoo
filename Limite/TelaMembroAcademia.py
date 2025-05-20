@@ -13,7 +13,8 @@ class TelaMembroAcademia(Tela):
         print("\n--- Membros da Academia ---")
         print("1. Incluir Membro")
         print("2. Remover Membro")
-        print("3. Alterar Membro")
+        print("3. Listar Membros")
+        print("4. Votar")
         print("0. Sair")
         return int(input("Escolha: ").strip())
     
@@ -44,8 +45,7 @@ class TelaMembroAcademia(Tela):
                 print(f"Erro: {e}. Tente novamente.")
 
     def alterarAtributoMembroAcademia(self, atributos):
-        print("--- Atributos ---")
-        print("0. Sair")
-        for i in range(1, len(atributos)+1):
-            print(f"{i}. {atributos[i-1]}")
+        print("\n --- Atributos ---")
+        for i in atributos.keys():
+            print(f"{i}. {atributos[i]}")
         return int(input("Selcione o atributo: "))

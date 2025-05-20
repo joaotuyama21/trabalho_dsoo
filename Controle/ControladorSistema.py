@@ -1,30 +1,36 @@
 from Controle.ControladorMembroAcademia import ControladorMembroAcademia
+from Controle.ControladorPessoas import ControladorPessoas
 from Limite.TelaSistema import TelaSistema
 
 class ControladorSistema():
     def __init__(self):
-        self.__controladorMembroAcademia = ControladorMembroAcademia(self)
-        # Colocar os demais controladores
         self.__telaSistema = TelaSistema(self)
+        self.__controladorMembroAcademia = ControladorMembroAcademia(self)
+        self.__controladorPessoas = ControladorPessoas(self)
+        # Colocar os demais controladores
+        
+    @property
+    def telaSistema(self):
+        return self.__telaSistema
     
     @property
     def controladorMembroAcademia(self):
         return self.__controladorMembroAcademia
-
+    
     @property
-    def telaSistema(self):
-        return self.__telaSistema
+    def controladorPessoas(self):
+        return self.__controladorPessoas
 
     def inicia(self):
         self.telaInicial()
 
     def telaInicial(self):
-        lista_opcoes = {1:self.controladorMembroAcademia.exibirMenuMembros}
+        listaOpcoes = {1:self.controladorMembroAcademia.exibirMenuMembros, 2:self.controladorPessoas.exibirMenu}
 
         while True:
             opcao = self.telaSistema.exibirMenuPrincipal()
-            funcao = lista_opcoes[opcao]
-            funcao()
-
-    def menuMembros(self):
-        self.controladorMembroAcademia.exibirMenuMembros()
+            if opcao in listaOpcoes.keys():
+                funcao = listaOpcoes[opcao]
+                funcao()
+            else: 
+                self.telaSistema.mostraMensagem("Opção não encontrada. Tente novamente!")

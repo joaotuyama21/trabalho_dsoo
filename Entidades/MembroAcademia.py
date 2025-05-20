@@ -12,10 +12,15 @@ class MembroAcademia(Pessoa):
         self.__categoriasIndicacao = []
     
     @property
+    def categoriasIndicacao(self):
+        return self.__categoriasIndicacao
+
+    @property
     def id(self):
         return self.__id
-    
-    def incluirCategoria(self, categoria: Categoria):
+
+    def addCategoria(self, categoria: Categoria):
         self.__categoriasIndicacao.append(categoria)
 
-    
+    def delCategoria(self, categoria: Categoria):
+        self.__categoriasIndicacao.remove(categoria)

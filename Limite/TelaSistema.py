@@ -7,7 +7,7 @@ class TelaSistema(Tela):
     def exibirMenuPrincipal(self):
         print("\n--- Sistema de Votação do Oscar ---")
         print("1. Membros")
-        print("2. ----")
+        print("2. Pessoas")
         print("3. ----")
         return int(input("Escolha: ").strip())
         
