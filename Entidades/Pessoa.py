@@ -6,3 +6,19 @@ class Pessoa:
         self.__sexo = sexo
         self.__nacionalidade = nacionalidade
         self.__nascimento = nascimento
+
+    @property
+    def nome(self):
+        return self.__nome
+    
+    @property
+    def sexo(self):
+        return self.__sexo
+    
+    @property
+    def nacionalidade(self):
+        return self.__nacionalidade
+    
+    @property
+    def nascimento(self):
+        return self.__nascimento

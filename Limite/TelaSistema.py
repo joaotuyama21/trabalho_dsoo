@@ -1,13 +1,13 @@
-from Controle.ControladorSistema import ControladorSistema
+from Limite.Tela import Tela
 
-class TelaSistema():
-    def __init__(self, controladorSistema: ControladorSistema):
+class TelaSistema(Tela):
+    def __init__(self, controladorSistema):
         self.__controladorSistema = controladorSistema
         
-    def exibir_menu_principal(self):
+    def exibirMenuPrincipal(self):
         print("\n--- Sistema de Votação do Oscar ---")
         print("1. Membros")
         print("2. ----")
         print("3. ----")
-        return input("Escolha: ").strip()
+        return int(input("Escolha: ").strip())
         

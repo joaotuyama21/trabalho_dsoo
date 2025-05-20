@@ -1,5 +1,5 @@
-from ControladorMembroAcademia import *
-from Limite.TelaSistema import *
+from Controle.ControladorMembroAcademia import ControladorMembroAcademia
+from Limite.TelaSistema import TelaSistema
 
 class ControladorSistema():
     def __init__(self):
@@ -19,7 +19,7 @@ class ControladorSistema():
         self.telaInicial()
 
     def telaInicial(self):
-        lista_opcoes = {1:self.membros}
+        lista_opcoes = {1:self.controladorMembroAcademia.exibirMenuMembros}
 
         while True:
             opcao = self.telaSistema.exibirMenuPrincipal()

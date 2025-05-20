@@ -1,4 +1,5 @@
-import Categoria, MembroAcademia
+from Entidades.Categoria import Categoria
+from Entidades.MembroAcademia import MembroAcademia
 
 class Indicacao:
     def __init__(self, indicado, categoria: Categoria, membroAcademia: MembroAcademia):
