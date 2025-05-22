@@ -1,5 +1,6 @@
 from Controle.ControladorMembroAcademia import ControladorMembroAcademia
 from Controle.ControladorPessoas import ControladorPessoas
+from Controle.ControladorFilmes import ControladorFilmes
 from Limite.TelaSistema import TelaSistema
 
 class ControladorSistema():
@@ -7,6 +8,7 @@ class ControladorSistema():
         self.__telaSistema = TelaSistema(self)
         self.__controladorMembroAcademia = ControladorMembroAcademia(self)
         self.__controladorPessoas = ControladorPessoas(self)
+        self.__controladorFilmes = ControladorFilmes(self)
         # Colocar os demais controladores
         
     @property
@@ -20,12 +22,20 @@ class ControladorSistema():
     @property
     def controladorPessoas(self):
         return self.__controladorPessoas
+    
+    @property
+    def controladorFilmes(self):
+        return self.__controladorFilmes
 
     def inicia(self):
         self.telaInicial()
 
     def telaInicial(self):
-        listaOpcoes = {1:self.controladorMembroAcademia.exibirMenuMembros, 2:self.controladorPessoas.exibirMenu}
+        listaOpcoes = {
+                       1:self.controladorMembroAcademia.exibirMenu,
+                       2:self.controladorPessoas.exibirMenu,
+                       3:self.controladorFilmes.exibirMenu
+                      }
 
         while True:
             opcao = self.telaSistema.exibirMenuPrincipal()

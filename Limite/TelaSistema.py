@@ -8,6 +8,6 @@ class TelaSistema(Tela):
         print("\n--- Sistema de Votação do Oscar ---")
         print("1. Membros")
         print("2. Pessoas")
-        print("3. ----")
+        print("3. Filmes")
         return int(input("Escolha: ").strip())
         

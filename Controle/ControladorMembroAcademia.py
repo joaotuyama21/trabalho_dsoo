@@ -24,7 +24,7 @@ class ControladorMembroAcademia():
     def telaMembroAcademia(self):
         return self.__telaMembroAcademia
     
-    def exibirMenuMembros(self):
+    def exibirMenu(self):
         lista_opcoes = {1: self.addMembro, 2: self.delMembro, 3: self.listarMembros, 4: self.indicar}
 
         while True:

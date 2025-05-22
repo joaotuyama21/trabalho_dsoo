@@ -33,7 +33,7 @@ class ControladorPessoas:
             funcao()
 
     def addPessoa(self):
-        info = self.telaPessoas.incluirPessoaInfo()
+        info = self.telaPessoas.addPessoaInfo()
         novaPessoa = Pessoa(info["nome"], info["sexo"], info["nacionalidade"], info["nascimento"])
         if not self.verificarSeHaPessoaDuplicado(novaPessoa):
             self.pessoas.append(novaPessoa)

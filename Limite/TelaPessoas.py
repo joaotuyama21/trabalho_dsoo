@@ -15,7 +15,7 @@ class TelaPessoas(Tela):
         print("0. Sair")
         return int(input("Escolha: ").strip())
     
-    def incluirPessoaInfo(self):
+    def addPessoaInfo(self):
         print("\n--- Cadastro de Pessoa ---")
         nome = input("Nome Completo: ").strip()
         sexo = input("Sexo: ").strip()
