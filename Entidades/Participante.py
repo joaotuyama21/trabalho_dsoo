@@ -7,3 +7,15 @@ class Participante:
         self.__participante = participante
         self.__filme = filme
         self.__funcao = funcao
+
+    @property
+    def participante(self) -> Pessoa:
+        return self.__participante
+    
+    @property
+    def filme(self) -> Filme:
+        return self.__filme
+    
+    @property
+    def funcao(self) -> Funcao:
+        return self.__funcao

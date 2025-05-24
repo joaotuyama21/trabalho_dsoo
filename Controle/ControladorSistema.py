@@ -51,3 +51,6 @@ class ControladorSistema():
                 funcao()
             else: 
                 self.telaSistema.mostraMensagem("Opção não encontrada. Tente novamente!")
+
+    def adicionarPessoa(self, novaPessoa):
+        self.controladorPessoas.pessoas.append(novaPessoa)

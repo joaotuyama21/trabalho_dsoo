@@ -1,5 +1,6 @@
 from Entidades.MembroAcademia import MembroAcademia
 from Limite.TelaMembroAcademia import TelaMembroAcademia
+from Controle.ControladorPessoas import ControladorPessoas
 
 from datetime import date
 
@@ -11,6 +12,10 @@ class ControladorMembroAcademia():
         self.__telaMembroAcademia = TelaMembroAcademia(self)
 
         #self.membrosAcademia.append(MembroAcademia("Matheus", "Masculino", date(2004,12,13), "Br"))
+
+    @property
+    def controladorPesoas(self):
+        return self.__controladorPessoas
 
     @property
     def membrosAcademia(self):
@@ -39,6 +44,7 @@ class ControladorMembroAcademia():
         novoMembro = MembroAcademia(info["nome"], info["sexo"], info["nascimento"], info["nacionalidade"])
         if not self.verificarSeHaMembroDuplicado(novoMembro):
             self.membrosAcademia.append(novoMembro)
+            self.controladorSistema.adicionarPessoa(novoMembro)
             self.telaMembroAcademia.mostraMensagem(f"\n✅ Membro '{novoMembro.nome}' cadastrado com ID {novoMembro.id}!")
         else:
             self.telaMembroAcademia.mostraMensagem(f"\n Membro '{novoMembro.nome}' já cadastrado!")
