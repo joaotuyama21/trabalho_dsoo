@@ -7,17 +7,18 @@ class ControladorPessoas:
         self.__pessoas = []
         self.__controladorSistema = controladorSistema
         self.__telaPessoas = TelaPessoas(self)
-
-        # self.pessoas.append(Pessoa("Matheus", "Masculino", "Br", date(2004,12,13)))
+        self.__pessoas.append(Pessoa("Leonardo DiCaprio", "Masculino", "Americano", date(1974, 11, 11)))
+        self.__pessoas.append(Pessoa("Emma Stone", "Feminino", "Americana", date(1988, 11, 6)))
+        self.__pessoas.append(Pessoa("Alejandro González Iñárritu", "Masculino", "Mexicano", date(1963, 8, 15)))
 
     @property
     def pessoas(self):
         return self.__pessoas
-    
+
     @property
     def controladorSistema(self):
         return self.__controladorSistema
-    
+
     @property
     def telaPessoas(self):
         return self.__telaPessoas
@@ -29,8 +30,11 @@ class ControladorPessoas:
             opcao = self.telaPessoas.exibirMenu()
             if opcao == 0:
                 break
-            funcao = listaFuncoes[opcao]
-            funcao()
+            funcao = listaFuncoes.get(opcao)
+            if funcao:
+                funcao()
+            else:
+                self.telaPessoas.mostraMensagem("Opção inválida!")
 
     def addPessoa(self):
         info = self.telaPessoas.addPessoaInfo()
@@ -92,14 +96,12 @@ class ControladorPessoas:
                      4: "Data de Nascimento"
                     }
         codigoAtr = self.telaPessoas.mostraAtributos(atributos)
-        
-        # Divide pelo tipo de dado
+
         if codigoAtr in {1,2,3}:
             novoValor = self.telaPessoas.getString(f"Novo(a) {atributos[codigoAtr]}: ")
-        elif codigoAtr in {4}:
+        elif codigoAtr == 4:
             novoValor = self.telaPessoas.getDate(f"Novo(a) {atributos[codigoAtr]}: ")
-        
+
         funcao = setters[codigoAtr]
         funcao(novoValor)
         self.telaPessoas.mostraMensagem(f"\n✅ Atributo '{atributos[codigoAtr]}' alterado para '{novoValor}' com sucesso!")
-        

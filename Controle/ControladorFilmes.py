@@ -6,8 +6,9 @@ class ControladorFilmes:
         self.__filmes = []
         self.__controladorSistema = controladorSistema
         self.__telaFilme = TelaFilme(self)
-
-        self.filmes.append(Filme("Guerra Mundial I", 2015, "Aventura", "BOOM PÁ PÁ PÁ TRATRATRATRA BOOOM"))
+        self.__filmes.append(Filme("Guerra Mundial I", 2015, "Aventura", "BOOM PÁ PÁ PÁ TRATRATRATRA BOOOM"))
+        self.__filmes.append(Filme("O Regresso", 2015, "Drama", "Um caçador luta para sobreviver após ser atacado por um urso."))
+        self.__filmes.append(Filme("La La Land", 2016, "Musical", "Um pianista de jazz e uma atriz se apaixonam em Los Angeles."))
 
     @property
     def filmes(self):
@@ -17,15 +18,26 @@ class ControladorFilmes:
     def telaFilme(self):
         return self.__telaFilme
 
-    def exibirMenu(self):
-        listaFuncoes = {1: self.addFilme, 2: self.delFilme, 3: self.listarFilmes, 4: self.detalharFilme}
+    @property
+    def controladorSistema(self):
+        return self.__controladorSistema
 
+    def exibirMenu(self):
+        listaFuncoes = {
+            1: self.addFilme,
+            2: self.delFilme,
+            3: self.listarFilmes,
+            4: self.detalharFilme
+        }
         while True:
             opcao = self.telaFilme.exibirMenu()
             if opcao == 0:
                 break
-            funcao = listaFuncoes[opcao]
-            funcao()
+            funcao = listaFuncoes.get(opcao)
+            if funcao:
+                funcao()
+            else:
+                self.telaFilme.mostraMensagem("Opção inválida!")
 
     def addFilme(self):
         info = self.telaFilme.addFilmeInfo()
@@ -34,7 +46,7 @@ class ControladorFilmes:
             self.filmes.append(novoFilme)
             self.telaFilme.mostraMensagem(f"\n✅ Filme '{novoFilme.titulo}' cadastrado com sucesso!")
         else:
-            self.telaFilme.mostraMensagem(f"\n Filme '{novoFilme.titulo}' já cadastrado!")
+            self.telaFilme.mostraMensagem(f"\nFilme '{novoFilme.titulo}' já cadastrado!")
 
     def verificarSeHaFilmeDuplicado(self, novoFilme):
         for filme in self.filmes:
@@ -46,8 +58,7 @@ class ControladorFilmes:
         self.telaFilme.mostraMensagem("--- Remover Filme ---")
         filmeRemover = self.buscarFilme()
         self.filmes.remove(filmeRemover)
-        self.telaFilme.mostraMensagem(f"\n ✅ Filme '{filmeRemover.titulo}' removido com sucesso")
-
+        self.telaFilme.mostraMensagem(f"\n✅ Filme '{filmeRemover.titulo}' removido com sucesso")
 
     def buscarFilme(self):
         while True:
@@ -59,15 +70,14 @@ class ControladorFilmes:
 
     def listarFilmes(self):
         self.telaFilme.mostraMensagem("\n--- Lista de Filmes ---")
-        filmes = self.filmes
-        for i in range(len(filmes)):
-            self.telaFilme.mostraMensagem(f"{i+1} - {filmes[i].titulo} ({filmes[i].ano})")
+        for i, filme in enumerate(self.filmes, 1):
+            self.telaFilme.mostraMensagem(f"{i} - {filme.titulo} ({filme.ano})")
         input()
 
     def detalharFilme(self):
         self.telaFilme.mostraMensagem("\n--- Detalhar Filme ---")
         filmeDetalhar = self.buscarFilme()
         self.telaFilme.mostraMensagem(f"Ano: {filmeDetalhar.ano}")
-        self.telaFilme.mostraMensagem(f"Genero: {filmeDetalhar.genero}")
+        self.telaFilme.mostraMensagem(f"Gênero: {filmeDetalhar.genero}")
         self.telaFilme.mostraMensagem(f"Sinopse: {filmeDetalhar.sinopse}")
         input()

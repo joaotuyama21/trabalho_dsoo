@@ -13,9 +13,16 @@ class TelaCategoria(Tela):
         print("0. Sair")
         return int(input("Escolha: ").strip())
 
-    def addCategoriaInfo(self) -> list:
-        print("\n--- Cadastrar Categoria ---")
-        nome = self.getString("Nome: ")
-        funcao = self.getString("Função: ")
-        return {"nome": nome, "funcao": funcao}
-
+def addCategoriaInfo(self) -> dict:
+    print("\n--- Cadastrar Categoria ---")
+    nome = self.getString("Nome da Categoria: ")
+    funcao_nome = self.getString("Nome da Função: ")
+    funcao_descricao = self.getString("Descrição da Função: ")
+    tipo = self.getInt("Digite 1 para categoria de Filme ou 2 para Participante: ")
+    e_filme = tipo == 1
+    return {
+        "nome": nome,
+        "funcao_nome": funcao_nome,
+        "funcao_descricao": funcao_descricao,
+        "e_filme": e_filme
+    }

@@ -10,7 +10,8 @@ class MembroAcademia(Pessoa):
         self.__id = MembroAcademia._ultimo_id
         super().__init__(nome, sexo, nascimento, nacionalidade)
         self.__categoriasIndicacao = []
-    
+        self.__votos = {}
+
     @property
     def categoriasIndicacao(self):
         return self.__categoriasIndicacao
@@ -24,3 +25,9 @@ class MembroAcademia(Pessoa):
 
     def delCategoria(self, categoria: Categoria):
         self.__categoriasIndicacao.remove(categoria)
+
+    def jaVotouNaCategoria(self, categoria):
+        return categoria.nome in self.__votos
+
+    def registrarVoto(self, categoria, indicado):
+        self.__votos[categoria.nome] = indicado

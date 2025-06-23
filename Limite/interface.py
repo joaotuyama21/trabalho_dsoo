@@ -1,6 +1,8 @@
 from datetime import date
 from sistema_oscar import SistemaOscar
 from Entidades.entidades import *
+from Controle.ControladorSistema import ControladorSistema as SistemaOscar
+
 
 class Interface:
     def __init__(self, sistema: SistemaOscar):
@@ -195,11 +197,11 @@ class Interface:
         except (ValueError, IndexError):
             print("Indicado inválido.")
             return
-        try:
-            self.sistema.registrar_voto(categoria, membro, indicado)
-            print("\n✅ Voto registrado com sucesso!")
-        except ValueError as e:
-            print(f"\n❌ Erro: {e}")
+        if membro.jaVotouNaCategoria(categoria):
+            print(f"\n❌ Membro '{membro.nome}' já votou na categoria '{categoria.nome}'!")
+            return
+        membro.registrarVoto(categoria, indicado)
+        print("\n✅ Voto registrado com sucesso!")
 
     def gerar_relatorio(self):
         print("\n--- Relatório de Vencedores ---")
