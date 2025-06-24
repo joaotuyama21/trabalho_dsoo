@@ -50,7 +50,7 @@ class TelaSistema(Tela):
         if button in (None, 'Cancelar'):
             opcao = 0
         self.close()
-        return opcao
+        return  opcao
     
     def open(self):
         button, values = self.__window.Read()

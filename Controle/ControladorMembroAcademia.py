@@ -40,7 +40,7 @@ class ControladorMembroAcademia:
             if funcao:
                 funcao()
             else:
-                self.telaMembroAcademia.mostraMensagem("Opção inválida!")
+                self.telaMembroAcademia.mostra_mensagem("Opção inválida!")
 
     def addMembro(self):
         info = self.telaMembroAcademia.incluirMembroInfo()

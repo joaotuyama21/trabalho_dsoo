@@ -24,7 +24,13 @@ class ControladorPessoas:
         return self.__telaPessoas
 
     def exibirMenu(self):
-        listaFuncoes = {1: self.addPessoa, 2: self.delPessoa, 3: self.listarPessoas, 4: self.detalharPessoa, 5: self.alterarPessoa}
+        listaFuncoes = {
+            1: self.addPessoa,
+            2: self.delPessoa,
+            3: self.listarPessoas,
+            4: self.detalharPessoa,
+            5: self.alterarPessoa
+        }
 
         while True:
             opcao = self.telaPessoas.exibirMenu()
@@ -34,7 +40,7 @@ class ControladorPessoas:
             if funcao:
                 funcao()
             else:
-                self.telaPessoas.mostraMensagem("Opção inválida!")
+                self.telaPessoas.mostra_mensagem("Opção inválida!")
 
     def addPessoa(self):
         info = self.telaPessoas.addPessoaInfo()

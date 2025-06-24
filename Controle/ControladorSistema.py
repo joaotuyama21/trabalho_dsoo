@@ -68,10 +68,12 @@ class ControladorSistema:
         while True:
             opcao = self.telaSistema.exibirMenuPrincipal()
             funcao = listaOpcoes.get(opcao)
+            if opcao == 0:
+                break
             if funcao:
                 funcao()
             else:
-                self.telaSistema.mostraMensagem("Opção não encontrada. Tente novamente!")
+                self.telaSistema.mostra_mensagem("Opção não encontrada. Tente novamente!")
 
     def adicionarPessoa(self, novaPessoa):
         self.controladorPessoas.pessoas.append(novaPessoa)

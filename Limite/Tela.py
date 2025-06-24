@@ -34,3 +34,4 @@ class Tela(ABC):
             if isinstance(output, int):
                 return output
             print("Valor invalido! Tente Novamente.")
+    

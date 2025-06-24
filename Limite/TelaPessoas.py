@@ -1,19 +1,51 @@
 from Limite.Tela import Tela
 from datetime import date
+import PySimpleGUI as sg
 
 class TelaPessoas(Tela):
     def __init__(self, controladorPessoas):
         self.__controladorPessoas = controladorPessoas
+        self.__window = None
+        self.init_opcoes()
+
+    @property
+    def controladorPessoas(self):
+        return self.__controladorPessoas
+    
+    @property
+    def window(self):
+        return self.__window
+
+    @window.setter
+    def window(self, janela):
+        self.__window = janela
+
+    def init_opcoes(self):
+        #sg.theme_previewer()
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('Menu de Pessoas', font=("Helvica", 20))],
+            [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+            [sg.Radio('Adicionar Pessoa', "RD1", key='1')],
+            [sg.Radio('Deletar Pessoa', "RD1", key='2')],
+            [sg.Radio('Listar Membro', "RD1", key='3')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.window = sg.Window('Menu de Membros').Layout(layout)
 
     def exibirMenu(self):
-        print("\n--- Pessoas ---")
-        print("1. Incluir Pessoa")
-        print("2. Remover Pessoa")
-        print("3. Listar Pessoas")
-        print("4. Detalhar Pessoa")
-        print("5. Alterar Pessoa")
-        print("0. Sair")
-        return int(input("Escolha: ").strip())
+        self.init_opcoes()
+        button, values = self.open()
+
+        for i in values.keys():
+            if values[i]:
+                opcao = int(i)
+                break
+        if button in (None, 'Cancelar'):
+            opcao == 0
+        self.close()
+        return opcao
+
     
     def addPessoaInfo(self):
         print("\n--- Cadastro de Pessoa ---")
@@ -36,3 +68,10 @@ class TelaPessoas(Tela):
         for i in atributos.keys():
             print(f"{i}. {atributos[i]}")
         return self.getInt("Escolha o Atributo: ")
+
+    def open(self):
+        button, values = self.__window.Read()
+        return button, values
+
+    def close(self):
+        self.__window.Close()
