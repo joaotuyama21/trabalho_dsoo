@@ -37,16 +37,26 @@ class ControladorFilmes:
             if funcao:
                 funcao()
             else:
-                self.telaFilme.mostraMensagem("Opção inválida!")
+                self.telaFilme.mostra_mensagem("Opção inválida!")
 
     def addFilme(self):
-        info = self.telaFilme.addFilmeInfo()
+        button, info = self.telaFilme.addFilmeInfo()
+        tipagem = True
+        if button in (None, 'Cancelar'):
+            return None
+
+        try:
+            info['ano'] = int(info['ano'])
+        except ValueError:
+            self.telaFilme.mostra_mensagem(f"Valor não suportado. Tente Novamente!")
+            return None
+
         novoFilme = Filme(info["titulo"], info["ano"], info["genero"], info["sinopse"])
-        if not self.verificarSeHaFilmeDuplicado(novoFilme):
+        if not self.verificarSeHaFilmeDuplicado(novoFilme) and tipagem:
             self.filmes.append(novoFilme)
-            self.telaFilme.mostraMensagem(f"\n✅ Filme '{novoFilme.titulo}' cadastrado com sucesso!")
+            self.telaFilme.mostra_mensagem(f"\n✅ Filme '{novoFilme.titulo}' cadastrado com sucesso!")
         else:
-            self.telaFilme.mostraMensagem(f"\nFilme '{novoFilme.titulo}' já cadastrado!")
+            self.telaFilme.mostra_mensagem(f"\nFilme '{novoFilme.titulo}' já cadastrado!")
 
     def verificarSeHaFilmeDuplicado(self, novoFilme):
         for filme in self.filmes:
@@ -55,24 +65,26 @@ class ControladorFilmes:
         return False
 
     def delFilme(self):
-        self.telaFilme.mostraMensagem("--- Remover Filme ---")
         filmeRemover = self.buscarFilme()
-        self.filmes.remove(filmeRemover)
-        self.telaFilme.mostraMensagem(f"\n✅ Filme '{filmeRemover.titulo}' removido com sucesso")
+        if filmeRemover is not None:
+            self.filmes.remove(filmeRemover)
+            self.telaFilme.mostra_mensagem(f"\n✅ Filme '{filmeRemover.titulo}' removido com sucesso")
 
     def buscarFilme(self):
         while True:
-            nomeFilme = self.telaFilme.getString("Nome do Filme: ")
+            button, nomeFilme = self.telaFilme.buscarFilmeInfo()
+            if button in (None, 'Cancelar'):
+                break
             for filme in self.filmes:
-                if filme.titulo == nomeFilme:
+                if filme.titulo == nomeFilme['titulo']:
                     return filme
-            self.telaFilme.mostraMensagem("Filme não encontrado. Tente Novamente!")
+            self.telaFilme.mostra_mensagem("Filme não encontrado. Tente Novamente!")
 
     def listarFilmes(self):
-        self.telaFilme.mostraMensagem("\n--- Lista de Filmes ---")
-        for i, filme in enumerate(self.filmes, 1):
-            self.telaFilme.mostraMensagem(f"{i} - {filme.titulo} ({filme.ano})")
-        input()
+        filmes = []
+        for filme in self.filmes:
+            filmes.append(filme.titulo)
+        self.telaFilme.listarFilmes(filmes)
 
     def detalharFilme(self):
         self.telaFilme.mostraMensagem("\n--- Detalhar Filme ---")
@@ -81,3 +93,14 @@ class ControladorFilmes:
         self.telaFilme.mostraMensagem(f"Gênero: {filmeDetalhar.genero}")
         self.telaFilme.mostraMensagem(f"Sinopse: {filmeDetalhar.sinopse}")
         input()
+
+    def detalharFilme(self):
+        filme = self.buscarFilme()
+        if filme is not None:
+            info = {
+                    'titulo': filme.titulo,
+                    'ano': filme.ano,
+                    'genero': filme.genero,
+                    'sinopse': filme.sinopse
+            }
+            self.telaFilme.detalharFilme(info)
