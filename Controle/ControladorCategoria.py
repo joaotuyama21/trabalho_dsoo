@@ -51,27 +51,30 @@ class ControladorCategoria:
                 self.telaCategoria.mostraMensagem("Opção inválida!")
 
     def addCategoria(self):
-        self.telaCategoria.mostraMensagem("Cadastro de novas categorias desabilitado. As principais categorias já estão cadastradas.")
+        self.telaCategoria.mostra_mensagem("Cadastro de novas categorias desabilitado. As principais categorias já estão cadastradas.")
 
     def delCategoria(self):
-        self.telaCategoria.mostraMensagem("Remoção de categorias padrão do Oscar não é permitida.")
+        self.telaCategoria.mostra_mensagem("Remoção de categorias padrão do Oscar não é permitida.")
 
     def buscarCategoria(self):
         while True:
-            nomeCategoria = self.telaCategoria.getString("Nome da Categoria: ")
+            button, nomeCategoria = self.telaCategoria.getString("Nome da Categoria")
             for categoria in self.categorias:
-                if categoria.nome == nomeCategoria:
+                if categoria.nome == nomeCategoria['key']:
                     return categoria
-            self.telaCategoria.mostraMensagem("Categoria não encontrada. Tente Novamente!")
+            self.telaCategoria.mostra_mensagem("Categoria não encontrada. Tente Novamente!")
 
     def listarCategorias(self):
-        self.telaCategoria.mostraMensagem("\n--- Lista de Categorias ---")
-        for i, categoria in enumerate(self.categorias, 1):
-            self.telaCategoria.mostraMensagem(f"{i} - {categoria.nome}")
-        input()
+        nomes = []
+        for categoria in self.categorias:
+            nomes.append(categoria.nome)
+        self.telaCategoria.listarCategorias(nomes)
 
     def detalharCategoria(self):
-        self.telaCategoria.mostraMensagem("\n--- Detalhar Categoria ---")
         categoriaDetalhar = self.buscarCategoria()
-        self.telaCategoria.mostraMensagem(f"Função: {categoriaDetalhar.funcao.nome}")
-        input()
+        info = {
+            'Nome':categoriaDetalhar.nome,
+            'Funcao':categoriaDetalhar.funcao.nome,
+            'É filme?':categoriaDetalhar.e_filme
+        }
+        self.telaCategoria.detalharCategoria(info)
