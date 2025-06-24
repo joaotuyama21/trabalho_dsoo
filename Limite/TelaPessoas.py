@@ -42,32 +42,30 @@ class TelaPessoas(Tela):
                 opcao = int(i)
                 break
         if button in (None, 'Cancelar'):
-            opcao == 0
+            opcao = 0
         self.close()
         return opcao
 
-    
-    def addPessoaInfo(self):
-        print("\n--- Cadastro de Pessoa ---")
-        nome = input("Nome Completo: ").strip()
-        sexo = input("Sexo: ").strip()
-        while True:
-            try:
-                dia = int(input("Dia de Nascimento (DD): "))
-                mes = int(input("Mês de Nascimento (MM): "))
-                ano = int(input("Ano de Nascimento (AAAA): "))
-                nascimento = date(ano, mes, dia)
-                break
-            except ValueError as e:
-                print(f"Erro: {e}. Tente novamente.")
-        nacionalidade = input("Nacionalidade: ").strip()
-        return {"nome": nome, "sexo": sexo, "nascimento": nascimento, "nacionalidade": nacionalidade}
-    
-    def mostraAtributos(self, atributos: dict):
-        print("--- Atributos ---")
-        for i in atributos.keys():
-            print(f"{i}. {atributos[i]}")
-        return self.getInt("Escolha o Atributo: ")
+    def initOpcoesIncluirPessoas(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('Incluir Pessoa', font=("Helvica", 20))],
+            [sg.Text('Preencha as informações', font=("Helvica", 15))],
+            [sg.Input('Nome', key='nome')],
+            [sg.Input('Nacionalidade', key='nacionalidade')],
+            [sg.Radio('Masculino', 'SEXO', key='M'),
+                sg.Radio('Feminino', 'SEXO', key='F')],
+            [sg.Input(key='nascimento', size=(20,1)), 
+                sg.CalendarButton('Data de Nascimento', target='nascimento', format='%d/%m/%Y')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.window = sg.Window('Incluir Pessoa').Layout(layout)
+
+    def AddPessoaInfo(self):
+        self.initOpcoesIncluirPessoas()
+        button, values = self.open()
+        self.close()
+        return button, values
 
     def open(self):
         button, values = self.__window.Read()

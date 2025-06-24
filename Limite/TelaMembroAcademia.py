@@ -55,7 +55,7 @@ class TelaMembroAcademia(Tela):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
             [sg.Text('Incluir Membro', font=("Helvica", 20))],
-            [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+            [sg.Text('Preencha as informações', font=("Helvica", 15))],
             [sg.Input('Nome', key='nome')],
             [sg.Input('Nacionalidade', key='nacionalidade')],
             [sg.Radio('Masculino', 'SEXO', key='M'),
@@ -70,7 +70,7 @@ class TelaMembroAcademia(Tela):
         self.initOpcoesIncluirMembro()
         button, values = self.open()
         self.close()
-        return values
+        return button, values
     
     #def delMembroInfo(self):
 

@@ -43,9 +43,10 @@ class ControladorMembroAcademia:
                 self.telaMembroAcademia.mostra_mensagem("Opção inválida!")
 
     def addMembro(self):
-        info = self.telaMembroAcademia.incluirMembroInfo()
+        button, info = self.telaMembroAcademia.incluirMembroInfo()
         sexo = 'Masculino' if info['M'] else 'F'
-        print(info['nascimento'])
+        if button == 'Cancelar':
+            return None
         if info['nascimento'] is None or info['nascimento'] == '':
             self.telaMembroAcademia.mostra_mensagem("Tá de palhaçada, meu parceiro?")
             return None

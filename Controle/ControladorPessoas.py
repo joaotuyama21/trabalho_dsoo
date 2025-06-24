@@ -7,6 +7,7 @@ class ControladorPessoas:
         self.__pessoas = []
         self.__controladorSistema = controladorSistema
         self.__telaPessoas = TelaPessoas(self)
+        
         self.__pessoas.append(Pessoa("Leonardo DiCaprio", "Masculino", "Americano", date(1974, 11, 11)))
         self.__pessoas.append(Pessoa("Emma Stone", "Feminino", "Americana", date(1988, 11, 6)))
         self.__pessoas.append(Pessoa("Alejandro González Iñárritu", "Masculino", "Mexicano", date(1963, 8, 15)))
@@ -43,7 +44,16 @@ class ControladorPessoas:
                 self.telaPessoas.mostra_mensagem("Opção inválida!")
 
     def addPessoa(self):
-        info = self.telaPessoas.addPessoaInfo()
+        button, info = self.telaPessoas.AddPessoaInfo()
+        if button in (None, 'Cancelar'):
+            return None
+        info["sexo"] = 'Masculino' if info['M'] else 'F'
+        if info['nascimento'] is None or info['nascimento'] == '':
+            self.telaPessoas.mostra_mensagem("Informações incorretas. Tente Novamente!")
+            return None
+        data = info['nascimento'].split('/')
+        info['nascimento'] = date(int(data[2]), int(data[1]), int(data[0]))
+
         novaPessoa = Pessoa(info["nome"], info["sexo"], info["nacionalidade"], info["nascimento"])
         if not self.verificarSeHaPessoaDuplicado(novaPessoa):
             self.pessoas.append(novaPessoa)
