@@ -83,13 +83,6 @@ class ControladorMembroAcademia:
 
     def listarMembros(self):
         self.telaMembroAcademia.listarMembros(self.membrosAcademia)
-        '''
-        self.telaMembroAcademia.mostra_mensagem("\n--- Lista de Membros da Academia ---")
-        for i, membro in enumerate(self.membrosAcademia, 1):
-            self.telaMembroAcademia.mostra_Mensagem(f"{i} - {membro.nome} (ID: {membro.id})")
-
-        input()
-        '''
 
     def indicar(self):
         self.telaMembroAcademia.mostraMensagem("\n--- Indicar Filme ou Participante ---")
