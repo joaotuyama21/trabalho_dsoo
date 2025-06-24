@@ -7,7 +7,7 @@ class ControladorPessoas:
         self.__pessoas = []
         self.__controladorSistema = controladorSistema
         self.__telaPessoas = TelaPessoas(self)
-        
+
         self.__pessoas.append(Pessoa("Leonardo DiCaprio", "Masculino", "Americano", date(1974, 11, 11)))
         self.__pessoas.append(Pessoa("Emma Stone", "Feminino", "Americana", date(1988, 11, 6)))
         self.__pessoas.append(Pessoa("Alejandro González Iñárritu", "Masculino", "Mexicano", date(1963, 8, 15)))
@@ -57,9 +57,9 @@ class ControladorPessoas:
         novaPessoa = Pessoa(info["nome"], info["sexo"], info["nacionalidade"], info["nascimento"])
         if not self.verificarSeHaPessoaDuplicado(novaPessoa):
             self.pessoas.append(novaPessoa)
-            self.telaPessoas.mostraMensagem(f"\n✅ Pessoa '{novaPessoa.nome}' cadastrado com ID {novaPessoa.id}!")
+            self.telaPessoas.mostra_mensagem(f"\n✅ Pessoa '{novaPessoa.nome}' cadastrado com ID {novaPessoa.id}!")
         else:
-            self.telaPessoas.mostraMensagem(f"\n Pessoa '{novaPessoa.nome}' já cadastrado!")
+            self.telaPessoas.mostra_mensagem(f"\n Pessoa '{novaPessoa.nome}' já cadastrado!")
 
     def verificarSeHaPessoaDuplicado(self, copia: Pessoa) -> bool:
         for pessoa in self.pessoas:
@@ -68,37 +68,57 @@ class ControladorPessoas:
         return False
 
     def delPessoa(self):
-        self.telaPessoas.mostraMensagem("\n--- Remover Pessoa ---")
-        pessoaRemovida = self.buscarPessoa()
-        self.pessoas.remove(pessoaRemovida)
-        self.telaPessoas.mostraMensagem(f"\n✅ Pessoa '{pessoaRemovida.nome}' foi removdo com sucesso!")
+        #self.telaPessoas.mostraMensagem("\n--- Remover Pessoa ---")
+        button, pessoaRemovida = self.buscarPessoa()
+        try:
+            self.pessoas.remove(pessoaRemovida)
+        except ValueError or AttributeError:
+            self.telaPessoas.mostra_mensagem(f"\n Pessoa '{pessoaRemovida.nome}' não foi removida com sucesso")
+        else:
+            self.telaPessoas.mostra_mensagem(f"\n✅ Pessoa '{pessoaRemovida.nome}' foi removdo com sucesso!")
 
     def buscarPessoa(self) -> Pessoa:
+        button, values = self.telaPessoas.buscarPessoaInfo()
+        nomePessoa = values['nome']
+        if button == 'Confirmar':
+            for pessoa in self.pessoas:
+                if pessoa.nome == nomePessoa:
+                    return button, pessoa
+            self.telaPessoas.mostra_mensagem("Pessoa não encontrada. Tente Novamente!")
+        return button, None
+        '''
         while True:
             id = self.telaPessoas.getInt("ID da Pessoa: ")
             for pessoa in self.pessoas:
                 if pessoa.id == id:
                     return pessoa
             print("Pessoa não encontrada! Tente novamente.")
-
+        '''
+            
     def listarPessoas(self):
         self.telaPessoas.mostraMensagem("\n--- Lista de Pessoas ---")
         for pessoa in self.pessoas:
             self.telaPessoas.mostraMensagem(f"{pessoa.id}. {pessoa.nome}")
         input()
 
+    def listarPessoas(self):
+        self.telaPessoas.listarPessoas(self.pessoas)
+
     def detalharPessoa(self):
-        self.telaPessoas.mostraMensagem("\n--- Detalhar Pessoa --- ")
-        pessoa = self.buscarPessoa()
-        self.telaPessoas.mostraMensagem(f"Nome: {pessoa.nome}")
-        self.telaPessoas.mostraMensagem(f"Sexo: {pessoa.sexo}")
-        self.telaPessoas.mostraMensagem(f"Nacionalidade: {pessoa.nacionalidade}")
-        self.telaPessoas.mostraMensagem(f"Data de Nascimento: {pessoa.nascimento}")
-        input()
+        button, pessoa = self.buscarPessoa()
+        info = {
+                'nome': pessoa.nome,
+                'sexo': pessoa.sexo,
+                'nacionalidade': pessoa.nacionalidade,
+                'nascimento': pessoa.nascimento
+        }
+        self.telaPessoas.detalharPessoa(info)
 
     def alterarPessoa(self):
-        self.telaPessoas.mostraMensagem("\n--- Alterar Pessoa ---")
-        pessoaParaAlterar = self.buscarPessoa()
+        button, pessoaParaAlterar = self.buscarPessoa()
+        if button in (None, 'Cancelar'):
+            return None
+
         setters = {
                    1: pessoaParaAlterar.nomeAlterar,
                    2: pessoaParaAlterar.sexoAlterar,
@@ -111,13 +131,35 @@ class ControladorPessoas:
                      3: "Nacionalidade",
                      4: "Data de Nascimento"
                     }
-        codigoAtr = self.telaPessoas.mostraAtributos(atributos)
+        button, codigoAtr = self.telaPessoas.mostraAtributos(atributos)
+        if button in (None, 'Cancelar'):
+            return None
+        
+        for i in codigoAtr.keys():
+            if codigoAtr[i]:
+                codigoAtr = int(i)
+                break
 
-        if codigoAtr in {1,2,3}:
-            novoValor = self.telaPessoas.getString(f"Novo(a) {atributos[codigoAtr]}: ")
-        elif codigoAtr == 4:
-            novoValor = self.telaPessoas.getDate(f"Novo(a) {atributos[codigoAtr]}: ")
+        if codigoAtr in {1,3}:
+            button, novoValor = self.telaPessoas.getString(f"Novo(a) {atributos[codigoAtr]}")
+            if button in (None, 'Cancelar'):
+                return None
+        elif codigoAtr in {2}:
+            button, novoValor1 = self.telaPessoas.getSexo(f'Novo(a) {atributos[codigoAtr]}')
+            if button in (None, 'Cancelar'):
+                return None
+            for i in novoValor1.keys():
+                if novoValor1[i]:
+                    novoValor = {}
+                    novoValor['key'] = i
+                    break
+        elif codigoAtr in {4}:
+            button, novoValor = self.telaPessoas.getDate(f"Novo(a) {atributos[codigoAtr]}")
+            if button in (None, 'Cancelar'):
+                return None
+            novoValor['key'] = novoValor['key'].split('/')
+            novoValor['key'] = date(int(novoValor['key'][2]), int(novoValor['key'][1]), int(novoValor['key'][0]))
 
         funcao = setters[codigoAtr]
-        funcao(novoValor)
-        self.telaPessoas.mostraMensagem(f"\n✅ Atributo '{atributos[codigoAtr]}' alterado para '{novoValor}' com sucesso!")
+        funcao(novoValor['key'])
+        self.telaPessoas.mostra_mensagem(f"\n✅ Atributo '{atributos[codigoAtr]}' alterado para '{novoValor['key']}' com sucesso!")
