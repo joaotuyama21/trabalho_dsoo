@@ -64,11 +64,9 @@ class ControladorSistema:
             7: self.controladorVoto.exibirMenu,
             8: self.exibir_resultados
         }
-
+        
         while True:
             opcao = self.telaSistema.exibirMenuPrincipal()
-            if opcao == 0:
-                break
             funcao = listaOpcoes.get(opcao)
             if funcao:
                 funcao()

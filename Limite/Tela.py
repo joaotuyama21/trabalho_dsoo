@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from datetime import date
+import PySimpleGUI as sg
 
 class Tela(ABC):
     @abstractmethod
     def __init__(self):
         pass
 
-    def mostraMensagem(self, mensagem: str):
-        print(mensagem)
+    def mostra_mensagem(self, msg):
+        sg.popup("", msg)
 
     def getString(self, mensagem: str):
         while True:
@@ -32,4 +33,4 @@ class Tela(ABC):
             output = int(input(mensagem))
             if isinstance(output, int):
                 return output
-            print("Valor invpalido! Tente Novamente.")
+            print("Valor invalido! Tente Novamente.")

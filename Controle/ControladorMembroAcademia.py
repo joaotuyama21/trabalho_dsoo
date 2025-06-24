@@ -8,6 +8,7 @@ class ControladorMembroAcademia:
         self.__membrosAcademia = []
         self.__controladorSistema = controladorSistema
         self.__telaMembroAcademia = TelaMembroAcademia(self)
+        
         self.__membrosAcademia.append(MembroAcademia("Fernanda Montenegro", "Feminino", date(1929, 10, 16), "Brasileira"))
         self.__membrosAcademia.append(MembroAcademia("Steven Spielberg", "Masculino", date(1946, 12, 18), "Americano"))
         self.__membrosAcademia.append(MembroAcademia("Pedro Almodóvar", "Masculino", date(1949, 9, 25), "Espanhol"))
@@ -43,13 +44,14 @@ class ControladorMembroAcademia:
 
     def addMembro(self):
         info = self.telaMembroAcademia.incluirMembroInfo()
-        novoMembro = MembroAcademia(info["nome"], info["sexo"], info["nascimento"], info["nacionalidade"])
+        sexo = 'Masculino' if info['M'] else 'F'
+        novoMembro = MembroAcademia(info["nome"], sexo, info["nascimento"], info["nacionalidade"])
         if not self.verificarSeHaMembroDuplicado(novoMembro):
             self.membrosAcademia.append(novoMembro)
             self.controladorSistema.adicionarPessoa(novoMembro)
-            self.telaMembroAcademia.mostraMensagem(f"\n✅ Membro '{novoMembro.nome}' cadastrado com ID {novoMembro.id}!")
+            self.telaMembroAcademia.mostra_mensagem(f"\n✅ Membro '{novoMembro.nome}' cadastrado com ID {novoMembro.id}!")
         else:
-            self.telaMembroAcademia.mostraMensagem(f"\nMembro '{novoMembro.nome}' já cadastrado!")
+            self.telaMembroAcademia.mostra_mensagem(f"\nMembro '{novoMembro.nome}' já cadastrado!")
 
     def verificarSeHaMembroDuplicado(self, novoMembro):
         for membro in self.membrosAcademia:

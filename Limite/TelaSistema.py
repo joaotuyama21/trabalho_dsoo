@@ -4,41 +4,60 @@ import PySimpleGUI as sg
 class TelaSistema(Tela):
     def __init__(self, controladorSistema):
         self.__controladorSistema = controladorSistema
+        self.__window = None
+        self.init_opcoes()        
 
-    def exibirMenuPrincipal(self):
-        '''
-        print("\n--- Sistema de Votação do Oscar ---")
-        print("1. Membros")
-        print("2. Pessoas")
-        print("3. Filmes")
-        print("4. Categorias")
-        print("5. Participantes")
-        print("6. Indicações")
-        print("7. Votos")
-        print("8. Resultados Finais")
-        print("0. Sair")
-        '''
-        
-        # Define o layout da janela
-        layout = [[sg.Button('My first Button!'), sg.Button('Disabled Button!', disabled=True)]]
+    def init_opcoes(self):
+        #sg.theme_previewer()
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+        [sg.Text('Menu Principal', font=("Helvica", 20))],
+        [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+        [sg.Radio('Membros', "RD1", key='1')],
+        [sg.Radio('Pessoas', "RD1", key='2')],
+        [sg.Radio('Filmes', "RD1", key='3')],
+        [sg.Radio('Categorias', "RD1", key='4')],
+        [sg.Radio('Participantes', "RD1", key='5')],
+        [sg.Radio('Indicações', "RD1", key='6')],
+        [sg.Radio('Votos', "RD1", key='7')],
+        [sg.Radio('Resultados Finais', "RD1", key='8')],
+        [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.__window = sg.Window('Sistema de livros').Layout(layout)
 
+    def exibirMenuPrincipal(self):        
+        self.init_opcoes()
+        button, values = self.open()
 
-        # Cria a janela
-        window = sg.Window("Menu Principal").Layout(layout)
+        if values['1']:
+            opcao = 1
+        if values['2']:
+            opcao = 2
+        if values['3']:
+            opcao = 3
+        if values['4']:
+            opcao = 4
+        if values['5']:
+            opcao = 5
+        if values['6']:
+            opcao = 6
+        if values['7']:
+            opcao = 7
+        if values['8']:
+            opcao = 8
+        # cobre os casos de Retornar, fechar janela, ou clicar cancelar
+        # Isso faz com que retornemos a tela do sistema caso qualquer uma dessas coisas aconteca
+        if button in (None, 'Cancelar'):
+            opcao = 0
+        self.close()
+        return opcao
+    
+    def open(self):
+        button, values = self.__window.Read()
+        return button, values
 
-        # Loop de eventos
-        while True:
-            event, values = window.read()
-            
-            if event in (sg.WIN_CLOSED, "Sair"):
-                break
-            else:
-                sg.popup(f"Você clicou em: {event}", title="Ação")
-
-        # Fecha a janela
-        window.close()
-
-        # return int(input("Escolha: ").strip())
+    def close(self):
+        self.__window.Close()
 
     def mostrar_resultados(self, resultados):
         print("\n=== RESULTADOS OFICIAIS ===")
