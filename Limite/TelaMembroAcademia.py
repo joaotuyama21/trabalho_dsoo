@@ -29,7 +29,7 @@ class TelaMembroAcademia(Tela):
         [sg.Text('Menu de Membros', font=("Helvica", 20))],
         [sg.Text('Escolha sua opção', font=("Helvica", 15))],
         [sg.Radio('Adicionar Membro', "RD1", key='1')],
-        [sg.Radio('Alterar Membro', "RD1", key='2')],
+        [sg.Radio('Deletar Membro', "RD1", key='2')],
         [sg.Radio('Listar Membro', "RD1", key='3')],
         [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
@@ -50,43 +50,45 @@ class TelaMembroAcademia(Tela):
             opcao = 0
         self.close()
         return opcao
-    
+
     def initOpcoesIncluirMembro(self):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
-        [sg.Text('Incluir Membro', font=("Helvica", 20))],
-        [sg.Text('Escolha sua opção', font=("Helvica", 15))],
-        [sg.Input('Nome', key='nome')],
-        [sg.Input('Nacionalidade', key='nacionalidade')],
-        [sg.Radio('Masculino', 'SEXO', key='M'),
-            sg.Radio('Feminino', 'SEXO', key='F')],
-        [sg.Input(key='nascimento', size=(20,1)), 
-            sg.CalendarButton('Data de Nascimento', target='nascimento', format='%d/%m/%Y')],
-        [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+            [sg.Text('Incluir Membro', font=("Helvica", 20))],
+            [sg.Text('Escolha sua opção', font=("Helvica", 15))],
+            [sg.Input('Nome', key='nome')],
+            [sg.Input('Nacionalidade', key='nacionalidade')],
+            [sg.Radio('Masculino', 'SEXO', key='M'),
+                sg.Radio('Feminino', 'SEXO', key='F')],
+            [sg.Input(key='nascimento', size=(20,1)), 
+                sg.CalendarButton('Data de Nascimento', target='nascimento', format='%d/%m/%Y')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
         self.window = sg.Window('Incluir Membro').Layout(layout)
 
     def incluirMembroInfo(self):
         self.initOpcoesIncluirMembro()
         button, values = self.open()
-        data = values['nascimento'].split('/')
-        try:
-            values['nascimento'] = date(int(data[2]), int(data[1]), int(data[0]))
-        except IndexError as e:
-            self.mostra_mensagem(f'Erro: {e}')
-            
-        print(values)
+        self.close()
         return values
     
     #def delMembroInfo(self):
 
+    def initOpcoesBuscarMembro(self):
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [
+            [sg.Text('Buscar Membro', font=("Helvica", 20))],
+            [sg.Text('Preencha os dados abaixo: ', font=("Helvica", 15))],
+            [sg.Input('Nome: ', key='nome')],
+            [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
+        ]
+        self.window = sg.Window('Buscar Membro').Layout(layout)
+
     def buscarMembroAcademiaInfo(self):
-        while True:
-            try:
-                id = int(input("Id do membro: ").strip())
-                return id
-            except ValueError as e:
-                print(f"Erro: {e}. Tente novamente.")
+        self.initOpcoesBuscarMembro()
+        button, value = self.open()
+        self.close()
+        return button, value
 
     def alterarAtributoMembroAcademia(self, atributos):
         print("\n --- Atributos ---")
@@ -94,11 +96,19 @@ class TelaMembroAcademia(Tela):
             print(f"{i}. {atributos[i]}")
         return int(input("Selcione o atributo: "))
     
-    def listarMembros(self, membros):
-        print("\n--- Membros da Academia ---")
+    def initOpcoesListarMembros(self, membros):
+        sg.ChangeLookAndFeel('DarkTeal4')
+
+        layout = [ [sg.Text('Lista de Membros', font=("Helvica", 20))] ]
         for membro in membros:
-            print(f"{membro.id}. {membro.nome}")
-        input()
+            layout.append([sg.Text(f'{membro.id} - {membro.nome}', font=("Helvica", 12))])
+        layout.append([sg.Button('Confirmar'), sg.Cancel('Cancelar')])
+        self.window = sg.Window('Lista de Membros').Layout(layout)
+
+    def listarMembros(self, membros):
+        self.initOpcoesListarMembros(membros)
+        self.open()
+        self.close()
 
     def open(self):
         button, values = self.__window.Read()

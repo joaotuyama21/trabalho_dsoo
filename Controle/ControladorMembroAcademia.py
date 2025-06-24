@@ -45,6 +45,12 @@ class ControladorMembroAcademia:
     def addMembro(self):
         info = self.telaMembroAcademia.incluirMembroInfo()
         sexo = 'Masculino' if info['M'] else 'F'
+        print(info['nascimento'])
+        if info['nascimento'] is None or info['nascimento'] == '':
+            self.telaMembroAcademia.mostra_mensagem("Tá de palhaçada, meu parceiro?")
+            return None
+        data = info['nascimento'].split('/')
+        info['nascimento'] = date(int(data[2]), int(data[1]), int(data[0]))
         novoMembro = MembroAcademia(info["nome"], sexo, info["nascimento"], info["nacionalidade"])
         if not self.verificarSeHaMembroDuplicado(novoMembro):
             self.membrosAcademia.append(novoMembro)
@@ -60,24 +66,30 @@ class ControladorMembroAcademia:
         return False
 
     def delMembro(self):
-        self.telaMembroAcademia.mostraMensagem("\n--- Remover Membro ---")
-        membroRemover = self.buscarMembro()
-        self.membrosAcademia.remove(membroRemover)
-        self.telaMembroAcademia.mostraMensagem(f"\n✅ Membro '{membroRemover.nome}' removido com sucesso")
+        button, membroRemover = self.buscarMembro()
+        if button == 'Confirmar':
+            self.membrosAcademia.remove(membroRemover)
+            self.telaMembroAcademia.mostra_mensagem(f"\n✅ Membro '{membroRemover.nome}' removido com sucesso")
 
     def buscarMembro(self):
-        while True:
-            nomeMembro = self.telaMembroAcademia.getString("Nome do Membro: ")
+        button, values = self.telaMembroAcademia.buscarMembroAcademiaInfo()
+        nomeMembro = values['nome']
+        if button == 'Confirmar':
             for membro in self.membrosAcademia:
                 if membro.nome == nomeMembro:
-                    return membro
-            self.telaMembroAcademia.mostraMensagem("Membro não encontrado. Tente Novamente!")
+                    return button,membro
+            self.telaMembroAcademia.mostra_mensagem("Membro não encontrado. Tente Novamente!")
+        return button, None
 
     def listarMembros(self):
-        self.telaMembroAcademia.mostraMensagem("\n--- Lista de Membros da Academia ---")
+        self.telaMembroAcademia.listarMembros(self.membrosAcademia)
+        '''
+        self.telaMembroAcademia.mostra_mensagem("\n--- Lista de Membros da Academia ---")
         for i, membro in enumerate(self.membrosAcademia, 1):
-            self.telaMembroAcademia.mostraMensagem(f"{i} - {membro.nome} (ID: {membro.id})")
+            self.telaMembroAcademia.mostra_Mensagem(f"{i} - {membro.nome} (ID: {membro.id})")
+
         input()
+        '''
 
     def indicar(self):
         self.telaMembroAcademia.mostraMensagem("\n--- Indicar Filme ou Participante ---")
