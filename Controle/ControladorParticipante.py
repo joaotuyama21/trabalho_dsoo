@@ -95,9 +95,9 @@ class ControladorParticipante:
 
         if not self.verificarSeHaParticipanteDuplicado(novoParticipante):
             self.participantes.append(novoParticipante)
-            self.telaParticipante.mostraMensagem(f"\n✅ Participante '{pessoa.nome}' cadastrado!")
+            self.telaParticipante.mostra_mensagem(f"\n✅ Participante '{pessoa.nome}' cadastrado!")
         else:
-            self.telaParticipante.mostraMensagem(f"\n Participante '{pessoa.nome}' já cadastrado!")
+            self.telaParticipante.mostra_mensagem(f"\n Participante '{pessoa.nome}' já cadastrado!")
 
     def verificarSeHaParticipanteDuplicado(self, copia: Participante):
         for participante in self.participantes:

@@ -6,3 +6,15 @@ class Indicacao:
         self.__categoria = categoria
         self.__indicado = indicado
         self.__membroAcademia = membroAcademia
+
+    @property
+    def categoria(self):
+        return self.__categoria
+    
+    @property
+    def indicado(self):
+        return self.__indicado
+    
+    @property
+    def membroAcademia(self):
+        return self.__membroAcademia

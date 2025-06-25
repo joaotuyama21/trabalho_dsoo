@@ -27,52 +27,72 @@ class ControladorIndicacao:
             4: self.detalharIndicacao
         }
         while True:
-            opcao = self.telaIndicacao.exibirMenu()
+            button, opcao = self.telaIndicacao.exibirMenu()
+            if button in (None, 'Cancelar'):
+                return None
             if opcao == 0:
                 break
             funcao = listaFuncoes.get(opcao)
             if funcao:
                 funcao()
             else:
-                self.telaIndicacao.mostraMensagem("Opção inválida!")
+                self.telaIndicacao.mostra_mensagem("Opção inválida!")
 
     def addIndicacao(self):
-        self.telaIndicacao.mostraMensagem("\n--- Adicionar Indicação ---")
 
+        # Verifica se há categorias cadastradas
         categorias = self.controladorSistema.controladorCategorias.categorias
         if not categorias:
-            self.telaIndicacao.mostraMensagem("Nenhuma categoria cadastrada!")
+            self.telaIndicacao.mostra_mensagem("Nenhuma categoria cadastrada! Impossivel Indicar.")
             return
-        for i, cat in enumerate(categorias, 1):
-            self.telaIndicacao.mostraMensagem(f"{i} - {cat.nome}")
-        idx_cat = self.telaIndicacao.getInt("Escolha a categoria (número): ") - 1
+        
+        # Verifica se há algum membro cadastrado
+        membros = self.controladorSistema.controladorMembroAcademia.membrosAcademia
+        if not membros:
+            self.telaIndicacao.mostra_mensagem("Nenhum membro da academia cadastrado! Impossivel Indicar.")
+            return
+        
+        # Lista as categorias
+        categoriasNome = []
+        for categoria in categorias:
+            categoriasNome.append(categoria.nome)
+        button, idx_cat = self.telaIndicacao.selecionar(categoriasNome)
+        if button in (None, 'Cancelar'):
+            return None
         if idx_cat < 0 or idx_cat >= len(categorias):
-            self.telaIndicacao.mostraMensagem("Categoria inválida.")
+            self.telaIndicacao.mostra_mensagem("Categoria inválida.")
             return
         categoria = categorias[idx_cat]
 
-        membros = self.controladorSistema.controladorMembroAcademia.membrosAcademia
-        if not membros:
-            self.telaIndicacao.mostraMensagem("Nenhum membro da academia cadastrado!")
-            return
-        for i, membro in enumerate(membros, 1):
-            self.telaIndicacao.mostraMensagem(f"{i} - {membro.nome} (ID: {membro.id})")
-        idx_membro = self.telaIndicacao.getInt("Escolha o membro que está indicando (número): ") - 1
+        # Escolha do membro
+        membroNome = []
+        for membro in membros:
+            membroNome.append(membro.nome)
+        button, idx_membro = self.telaIndicacao.selecionar(membroNome)
+        if button in (None, 'Cancelar'):
+            return None
         if idx_membro < 0 or idx_membro >= len(membros):
-            self.telaIndicacao.mostraMensagem("Membro inválido.")
+            self.telaIndicacao.mostra_mensagem("Membro inválido.")
             return
         membro = membros[idx_membro]
 
+        # Escolha do participante
         if categoria.e_filme:
             filmes = self.controladorSistema.controladorFilmes.filmes
             if not filmes:
-                self.telaIndicacao.mostraMensagem("Nenhum filme cadastrado!")
+                self.telaIndicacao.mostra_mensagem("Nenhum filme cadastrado!")
                 return
-            for i, filme in enumerate(filmes, 1):
-                self.telaIndicacao.mostraMensagem(f"{i} - {filme.titulo} ({filme.ano})")
-            idx_filme = self.telaIndicacao.getInt("Escolha o filme indicado (número): ") - 1
+            
+            # Lista os filmes indicaveis
+            nomeFilmes = []
+            for filme in filmes:
+                nomeFilmes.append(filme.titulo)
+            button, idx_filme = self.telaIndicacao.selecionar(nomeFilmes)
+            if button in (None, 'Cancelar'):
+                return None
+
             if idx_filme < 0 or idx_filme >= len(filmes):
-                self.telaIndicacao.mostraMensagem("Filme inválido.")
+                self.telaIndicacao.mostra_mensagem("Filme inválido.")
                 return
             indicado = filmes[idx_filme]
         else:
@@ -83,67 +103,90 @@ class ControladorIndicacao:
                 if p.funcao.nome.strip().lower() == funcao_categoria
             ]
             if not participantes_filtrados:
-                self.telaIndicacao.mostraMensagem("Nenhum participante cadastrado para essa função!")
+                self.telaIndicacao.mostra_mensagem("Nenhum participante cadastrado para essa função!")
                 return
-            for i, part in enumerate(participantes_filtrados, 1):
-                self.telaIndicacao.mostraMensagem(f"{i} - {part.participante.nome} ({part.funcao.nome} em '{part.filme.titulo}')")
-            idx_part = self.telaIndicacao.getInt("Escolha o participante indicado (número): ") - 1
+            
+            nomeParticipantes = []
+            for participante in participantes_filtrados:
+                nomeParticipantes.append(participante.participante.nome)
+            button, idx_part = self.telaIndicacao.selecionar(nomeParticipantes)
+            if button in (None, 'Cancelar'):
+                return None
             if idx_part < 0 or idx_part >= len(participantes_filtrados):
-                self.telaIndicacao.mostraMensagem("Participante inválido.")
+                self.telaIndicacao.mostra_mensagem("Participante inválido.")
                 return
             indicado = participantes_filtrados[idx_part]
 
         nova_indicacao = Indicacao(indicado, categoria, membro)
         self.indicacoes.append(nova_indicacao)
-        self.telaIndicacao.mostraMensagem("\n✅ Indicação cadastrada com sucesso!")
+        self.telaIndicacao.mostra_mensagem("\n✅ Indicação cadastrada com sucesso!")
 
 
     def delIndicacao(self):
-        self.telaIndicacao.mostraMensagem("\n--- Remover Indicação ---")
         if not self.indicacoes:
-            self.telaIndicacao.mostraMensagem("Nenhuma indicação cadastrada!")
+            self.telaIndicacao.mostra_mensagem("Nenhuma indicação cadastrada!")
             return
-        for i, ind in enumerate(self.indicacoes, 1):
-            self.telaIndicacao.mostraMensagem(f"{i} - {self._descricao_indicacao(ind)}")
-        idx = self.telaIndicacao.getInt("Escolha a indicação para remover (número): ") - 1
+        
+        indicadoMembro = []
+        for indicacao in self.indicacoes:
+            if indicacao.categoria.e_filme:
+                indicadoMembro.append(f'{indicacao.indicado.filme.nome} indicado pelo(a) {indicacao.membroAcademia.nome} como {indicacao.categoria.nome}')
+            else:
+                indicadoMembro.append(f'{indicacao.indicado.participante.nome} indicado pelo(a) {indicacao.membroAcademia.nome} como {indicacao.categoria.nome}')
+        button, idx = self.telaIndicacao.selecionar(indicadoMembro)
+        if button in (None, 'Cancelar'):
+            return
         if idx < 0 or idx >= len(self.indicacoes):
-            self.telaIndicacao.mostraMensagem("Índice inválido.")
+            self.telaIndicacao.mostra_mensagem("Índice inválido.")
             return
         removida = self.indicacoes.pop(idx)
-        self.telaIndicacao.mostraMensagem(f"\n✅ Indicação removida: {self._descricao_indicacao(removida)}")
+        self.telaIndicacao.mostra_mensagem(f"\n✅ Indicação removida")
 
     def listarIndicacoes(self):
-        self.telaIndicacao.mostraMensagem("\n--- Lista de Indicações ---")
         if not self.indicacoes:
-            self.telaIndicacao.mostraMensagem("Nenhuma indicação cadastrada!")
+            self.telaIndicacao.mostra_mensagem("Nenhuma indicação cadastrada!")
             return
-        for i, ind in enumerate(self.indicacoes, 1):
-            self.telaIndicacao.mostraMensagem(f"{i} - {self._descricao_indicacao(ind)}")
-        input()
+        
+        indicacaoDetalhes = []
+        for indicacao in self.indicacoes:
+            indicacaoDetalhes.append(self._descricao_indicacao(indicacao))
+        self.telaIndicacao.listarIndicacoes(indicacaoDetalhes)
 
     def detalharIndicacao(self):
-        self.telaIndicacao.mostraMensagem("\n--- Detalhar Indicação ---")
+        self.telaIndicacao.mostra_mensagem("\n--- Detalhar Indicação ---")
         if not self.indicacoes:
-            self.telaIndicacao.mostraMensagem("Nenhuma indicação cadastrada!")
+            self.telaIndicacao.mostra_mensagem("Nenhuma indicação cadastrada!")
             return
         for i, ind in enumerate(self.indicacoes, 1):
-            self.telaIndicacao.mostraMensagem(f"{i} - {self._descricao_indicacao(ind)}")
+            self.telaIndicacao.mostra_mensagem(f"{i} - {self._descricao_indicacao(ind)}")
         idx = self.telaIndicacao.getInt("Escolha a indicação para detalhar (número): ") - 1
         if idx < 0 or idx >= len(self.indicacoes):
-            self.telaIndicacao.mostraMensagem("Índice inválido.")
+            self.telaIndicacao.mostra_mensagem("Índice inválido.")
             return
         ind = self.indicacoes[idx]
-        self.telaIndicacao.mostraMensagem("Detalhes da Indicação:")
-        self.telaIndicacao.mostraMensagem(f"Categoria: {ind.categoria.nome}")
+        self.telaIndicacao.mostra_mensagem("Detalhes da Indicação:")
+        self.telaIndicacao.mostra_mensagem(f"Categoria: {ind.categoria.nome}")
         if ind.categoria.e_filme:
-            self.telaIndicacao.mostraMensagem(f"Filme: {ind.indicado.titulo} ({ind.indicado.ano})")
+            self.telaIndicacao.mostra_mensagem(f"Filme: {ind.indicado.titulo} ({ind.indicado.ano})")
         else:
-            self.telaIndicacao.mostraMensagem(f"Participante: {ind.indicado.participante.nome} ({ind.indicado.funcao.nome} em '{ind.indicado.filme.titulo}')")
-        self.telaIndicacao.mostraMensagem(f"Indicado por: {ind.membro.nome}")
+            self.telaIndicacao.mostra_mensagem(f"Participante: {ind.indicado.participante.nome} ({ind.indicado.funcao.nome} em '{ind.indicado.filme.titulo}')")
+        self.telaIndicacao.mostra_mensagem(f"Indicado por: {ind.membro.nome}")
         input()
 
     def _descricao_indicacao(self, ind):
         if ind.categoria.e_filme:
-            return f"[{ind.categoria.nome}] Filme: {ind.indicado.titulo} ({ind.indicado.ano}) | Membro: {ind.membro.nome}"
+            descricao = {
+                'Categoria':f'{ind.categoria.nome}',
+                'Filme': f'{ind.indicado.titulo} ({ind.indicado.ano})',
+                'Membro': f'{ind.membroAcademia.nome}',
+                'eh_filme': True
+            }
         else:
-            return f"[{ind.categoria.nome}] Participante: {ind.indicado.participante.nome} ({ind.indicado.funcao.nome} em '{ind.indicado.filme.titulo}') | Membro: {ind.membro.nome}"
+            descricao = {
+                'Categoria': f"{ind.categoria.nome}",
+                "Participante": f'{ind.indicado.participante.nome}',
+                'Filme': f'{ind.indicado.filme.titulo}',
+                'Membro': f"{ind.membroAcademia.nome}",
+                'eh_filme': False
+            } 
+        return descricao
