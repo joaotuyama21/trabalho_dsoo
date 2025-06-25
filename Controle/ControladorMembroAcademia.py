@@ -2,6 +2,7 @@ from Entidades.MembroAcademia import MembroAcademia
 from Limite.TelaMembroAcademia import TelaMembroAcademia
 from Entidades.Indicacao import Indicacao
 from datetime import date
+from Exceptions.Excecoes import *
 
 class ControladorMembroAcademia:
     def __init__(self, controladorSistema):
@@ -38,7 +39,10 @@ class ControladorMembroAcademia:
                 break
             funcao = lista_opcoes.get(opcao)
             if funcao:
-                funcao()
+                try:
+                    funcao()
+                except (NenhumaCategoriaCadastradaException, InformacoesInvalidasException, NenhumParticipanteCadastradoException) as e:
+                    self.telaMembroAcademia.mostra_mensagem('Erro: {e}')
             else:
                 self.telaMembroAcademia.mostra_mensagem("Opção inválida!")
 
@@ -48,8 +52,7 @@ class ControladorMembroAcademia:
         if button == 'Cancelar':
             return None
         if info['nascimento'] is None or info['nascimento'] == '':
-            self.telaMembroAcademia.mostra_mensagem("Tá de palhaçada, meu parceiro?")
-            return None
+            raise InformacoesInvalidasException
         data = info['nascimento'].split('/')
         info['nascimento'] = date(int(data[2]), int(data[1]), int(data[0]))
         novoMembro = MembroAcademia(info["nome"], sexo, info["nascimento"], info["nacionalidade"])
@@ -90,8 +93,7 @@ class ControladorMembroAcademia:
         membro = self.buscarMembro()
         categorias = self.controladorSistema.controladorCategorias.categorias
         if not categorias:
-            self.telaMembroAcademia.mostraMensagem("Nenhuma categoria cadastrada!")
-            return
+            raise NenhumaCategoriaCadastradaException
         for i, cat in enumerate(categorias, 1):
             self.telaMembroAcademia.mostraMensagem(f"{i} - {cat.nome}")
         idx_cat = self.telaMembroAcademia.getInt("Escolha a categoria (número): ") - 1
@@ -103,8 +105,7 @@ class ControladorMembroAcademia:
         if categoria.e_filme:
             filmes = self.controladorSistema.controladorFilmes.filmes
             if not filmes:
-                self.telaMembroAcademia.mostraMensagem("Nenhum filme cadastrado!")
-                return
+                raise NenhumFilmeCadastradoException
             for i, filme in enumerate(filmes, 1):
                 self.telaMembroAcademia.mostraMensagem(f"{i} - {filme.titulo} ({filme.ano})")
             idx_filme = self.telaMembroAcademia.getInt("Escolha o filme indicado (número): ") - 1
@@ -115,7 +116,7 @@ class ControladorMembroAcademia:
         else:
             participantes = self.controladorSistema.controladorParticipante.participantes
             if not participantes:
-                self.telaMembroAcademia.mostraMensagem("Nenhum participante cadastrado!")
+                raise NenhumParticipanteCadastradoException
                 return
             for i, part in enumerate(participantes, 1):
                 self.telaMembroAcademia.mostraMensagem(f"{i} - {part.participante.nome} ({part.funcao.nome} em '{part.filme.titulo}')")

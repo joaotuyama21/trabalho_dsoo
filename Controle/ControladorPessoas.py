@@ -1,6 +1,7 @@
 from Limite.TelaPessoas import TelaPessoas
 from Entidades.Pessoa import Pessoa
 from datetime import date
+from Exceptions.Excecoes import *
 
 class ControladorPessoas:
     def __init__(self, controladorSistema):
@@ -39,7 +40,10 @@ class ControladorPessoas:
                 break
             funcao = listaFuncoes.get(opcao)
             if funcao:
-                funcao()
+                try:
+                    funcao()
+                except (InstaciaJaCadastradaException) as e:
+                    self.telaPessoas.mostra_mensagem(f'Erro: {e}')
             else:
                 self.telaPessoas.mostra_mensagem("Opção inválida!")
 
@@ -59,7 +63,7 @@ class ControladorPessoas:
             self.pessoas.append(novaPessoa)
             self.telaPessoas.mostra_mensagem(f"\n✅ Pessoa '{novaPessoa.nome}' cadastrado com ID {novaPessoa.id}!")
         else:
-            self.telaPessoas.mostra_mensagem(f"\n Pessoa '{novaPessoa.nome}' já cadastrado!")
+            raise InstaciaJaCadastradaException
 
     def verificarSeHaPessoaDuplicado(self, copia: Pessoa) -> bool:
         for pessoa in self.pessoas:
