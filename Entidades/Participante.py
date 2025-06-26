@@ -19,3 +19,12 @@ class Participante:
     @property
     def funcao(self) -> Funcao:
         return self.__funcao
+    
+    def pessoaAlterar(self, participante):
+        self.__participante = participante
+
+    def filmeAlterar(self, filme):
+        self.__filme = filme
+    
+    def funcaoAlterar(self, funcao):
+        self.__funcao = funcao
