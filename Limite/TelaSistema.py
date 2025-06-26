@@ -65,13 +65,14 @@ class TelaSistema(Tela):
         for categoria, dados in resultados.items():
             layout.append([sg.Text(f"{categoria.upper()}", font=("Helvica", 12))])
             layout.append([sg.Text(f"Vencedor: {dados['1° Lugar']}", font=("Helvica", 12))])
-            layout.append([sg.Text(f"Votos recebidos: {dados['votos']}/{dados['total_votos']}", font=("Helvica", 12))])
-            layout.append([])
-            layout.append([sg.Text(f"2° Lugar: {dados['2° Lugar']}", font=("Helvica", 12))])
-            layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 12))])
-            layout.append([])
-            layout.append([sg.Text(f"3° Lugar: {dados['3° Lugar']}", font=("Helvica", 12))])
-            layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 12))])
-        self.__window = sg.Window('Sistema de livros').Layout(layout)
+            layout.append([sg.Text(f"Votos recebidos: {dados['votos']}/{dados['total_votos']}", font=("Helvica", 10))])
+            if dados['2° Lugar'] is not None:
+                layout.append([sg.Text(f"2° Lugar: {dados['2° Lugar']}", font=("Helvica", 12))])
+                layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 10))])
+                if dados['3° Lugar'] is not None:
+                    layout.append([sg.Text(f"3° Lugar: {dados['3° Lugar']}", font=("Helvica", 12))])
+                    layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 10))])
+        layout.append([sg.Cancel('Cancelar')])
+        self.__window = sg.Window('Sistema Oscar').Layout(layout)
         self.open()
         self.close()
