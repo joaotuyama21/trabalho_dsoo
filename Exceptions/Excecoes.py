@@ -1,14 +1,6 @@
-class NenhumMembroCadastradoException(Exception):
+class IndiceInvalidoException(Exception):
     def __init__(self):
-        super().__init__("Nenhum membro cadastrado")
-
-class NenhumaCategoriaCadastradaException(Exception):
-    def __init__(self):
-        super().__init__("Nenhuma Categoria cadastrado")
-
-class NenhumFilmeCadastradoException(Exception):
-    def __init__(self):
-        super().__init__("Nenhum Filme cadastrado")
+        super().__init__('Indice Inválido')
 
 class InstaciaJaCadastradaException(Exception):
     def __init__(self):
@@ -18,6 +10,10 @@ class InformacoesInvalidasException(Exception):
     def __init__(self):
         super().__init__("Informações Inválidas")
 
-class NenhumParticipanteCadastradoException(Exception):
+class MembroJaVotouNessaCategoriaException(Exception):
     def __init__(self):
-        super().__init__("Nenhum Paricipante cadastrado")
+        super().__init__('Esse membro já votou nessa categoria')
+
+class SemCadastrosException(Exception):
+    def __init__(self):
+        super().__init__('Sem cadastros necessários para realizar a ação')

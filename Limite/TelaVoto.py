@@ -28,7 +28,7 @@ class TelaVoto(Tela):
             [sg.Radio('Adicionar Voto', "RD1", key='1')],
             [sg.Radio('Remover Voto', "RD1", key='2')],
             [sg.Radio('Listar Votos', "RD1", key='3')],
-            [sg.Radio('Detalhar Voto', "RD1", key='4')],
+            #[sg.Radio('Detalhar Voto', "RD1", key='4')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
         self.window = sg.Window('Menu de Votos').Layout(layout)
@@ -62,16 +62,13 @@ class TelaVoto(Tela):
         self.close()
         return button, values
 
-    def listarIndicacoes(self, detalhes):
+    def listarVotos(self, detalhes):
         sg.ChangeLookAndFeel('DarkTeal4')
         layout = [
             [sg.Text('Lista de Votos', font=("Helvica", 20))]
         ]
         for i in range(len(detalhes)):
-            if detalhes[i]['eh_filme']:
-                layout.append([sg.Text(f"{i+1} - Filme: {detalhes[i]['Filme']} - {detalhes[i]['Categoria']} - {detalhes[i]['Membro']}",font=("Helvica", 10))])
-            else:
-                layout.append([sg.Text(f"{i+1} - Participante: {detalhes[i]['Participante']} - {detalhes[i]['Categoria']} - {detalhes[i]['Membro']}", font=("Helvica", 10))])
+            layout.append([sg.Text(f"{i+1} - Indicado: {detalhes[i]['Nome']} - {detalhes[i]['Categoria']} - Membro: {detalhes[i]['Membro']}",font=("Helvica", 10))])
 
         layout.append([sg.Button('Confirmar'), sg.Cancel('Cancelar')])
         self.window = sg.Window('Menu de Votos').Layout(layout)

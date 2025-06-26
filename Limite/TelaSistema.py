@@ -60,9 +60,18 @@ class TelaSistema(Tela):
         self.__window.Close()
 
     def mostrar_resultados(self, resultados):
-        print("\n=== RESULTADOS OFICIAIS ===")
+        sg.ChangeLookAndFeel('DarkTeal4')
+        layout = [[sg.Text('Resultados Oficiais', font=("Helvica", 20))], [sg.Text('Parabéns ao vencedores!', font=("Helvica", 15))]]
         for categoria, dados in resultados.items():
-            print(f"\n{categoria.upper()}")
-            print(f"Vencedor: {dados['vencedor']}")
-            print(f"Votos recebidos: {dados['votos']}/{dados['total_votos']}")
-            print("="*40)
+            layout.append([sg.Text(f"{categoria.upper()}", font=("Helvica", 12))])
+            layout.append([sg.Text(f"Vencedor: {dados['1° Lugar']}", font=("Helvica", 12))])
+            layout.append([sg.Text(f"Votos recebidos: {dados['votos']}/{dados['total_votos']}", font=("Helvica", 12))])
+            layout.append([])
+            layout.append([sg.Text(f"2° Lugar: {dados['2° Lugar']}", font=("Helvica", 12))])
+            layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 12))])
+            layout.append([])
+            layout.append([sg.Text(f"3° Lugar: {dados['3° Lugar']}", font=("Helvica", 12))])
+            layout.append([sg.Text(f"Votos recebidos: {dados['votos_2']}/{dados['total_votos']}", font=("Helvica", 12))])
+        self.__window = sg.Window('Sistema de livros').Layout(layout)
+        self.open()
+        self.close()

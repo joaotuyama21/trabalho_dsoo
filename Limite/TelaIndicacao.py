@@ -28,7 +28,7 @@ class TelaIndicacao(Tela):
             [sg.Radio('Adicionar Indicação', "RD1", key='1')],
             [sg.Radio('Remover Indicação', "RD1", key='2')],
             [sg.Radio('Listar Indicações', "RD1", key='3')],
-            [sg.Radio('Detalhar Indicação', "RD1", key='4')],
+            #[sg.Radio('Detalhar Indicação', "RD1", key='4')],
             [sg.Button('Confirmar'), sg.Cancel('Cancelar')]
         ]
         self.window = sg.Window('Menu de Indicações').Layout(layout)

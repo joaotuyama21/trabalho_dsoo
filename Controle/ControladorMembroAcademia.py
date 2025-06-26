@@ -117,7 +117,6 @@ class ControladorMembroAcademia:
             participantes = self.controladorSistema.controladorParticipante.participantes
             if not participantes:
                 raise NenhumParticipanteCadastradoException
-                return
             for i, part in enumerate(participantes, 1):
                 self.telaMembroAcademia.mostraMensagem(f"{i} - {part.participante.nome} ({part.funcao.nome} em '{part.filme.titulo}')")
             idx_part = self.telaMembroAcademia.getInt("Escolha o participante indicado (número): ") - 1

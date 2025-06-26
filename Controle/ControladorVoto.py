@@ -1,4 +1,7 @@
-from Entidades import *
+from Entidades.Participante import Participante
+from Entidades.Voto import Voto
+from Entidades.Filme import Filme
+from Entidades.Indicacao import Indicacao
 from Limite.TelaVoto import TelaVoto
 from datetime import date
 from Exceptions.Excecoes import *
@@ -36,7 +39,7 @@ class ControladorVoto:
             if funcao:
                 try:
                     funcao()
-                except (NenhumMembroCadastradoException, NenhumaCategoriaCadastradaException, NenhumFilmeCadastradoException) as e:
+                except (SemCadastrosException, MembroJaVotouNessaCategoriaException, IndiceInvalidoException) as e:
                     self.telaVoto.mostra_mensagem(f'Erro: {e}')
             else:
                 self.telaVoto.mostra_mensagem("Opção inválida!")
@@ -44,11 +47,11 @@ class ControladorVoto:
     def addVoto(self):
         membros = self.controladorSistema.controladorMembroAcademia.membrosAcademia
         if not membros:
-            raise NenhumMembroCadastradoException
+            raise SemCadastrosException
         
         categorias = self.controladorSistema.controladorCategorias.categorias
         if not categorias:
-            raise NenhumaCategoriaCadastradaException
+            raise SemCadastrosException
         
         # Selecionar o membro
         membroNome = []
@@ -57,6 +60,8 @@ class ControladorVoto:
         button, idx_membro = self.telaVoto.selecionar(membroNome)
         if button in (None, 'Cancelar'):
             return None
+        if idx_membro < 0 or idx_membro >= len(membros):
+            raise IndiceInvalidoException
         membro = membros[idx_membro]
 
         # Seleciona a categoria
@@ -66,13 +71,15 @@ class ControladorVoto:
         button, idx_cat = self.telaVoto.selecionar(categoriasNome)
         if button in (None, 'Cancelar'):
             return None
+        if idx_cat < 0 or idx_cat >= len(categorias):
+            raise IndiceInvalidoException
         categoria = categorias[idx_cat]
 
         if categoria.e_filme:
             filmes = self.controladorSistema.controladorFilmes.filmes
             if not filmes:
                 self.telaVoto.mostra_mensagem("Nenhum filme cadastrado!")
-                raise NenhumFilmeCadastradoException
+                raise SemCadastrosException
 
             nomeFilmes = []
             for filme in filmes:
@@ -80,9 +87,12 @@ class ControladorVoto:
             button, idx_indicado = self.telaVoto.selecionar(nomeFilmes)
             if button in (None, 'Cancelar'):
                 return None
+            if idx_indicado < 0 or idx_indicado >= len(filmes):
+                raise IndiceInvalidoException
             indicado = filmes[idx_indicado]
         else:
             # FILTRO ESPECÍFICO POR CATEGORIA
+
             participantes = self.controladorSistema.controladorParticipante.participantes
             funcao_categoria = categoria.funcao.nome.strip().lower()
             participantes_filtrados = [
@@ -92,18 +102,20 @@ class ControladorVoto:
             if not participantes_filtrados:
                 self.telaVoto.mostra_mensagem("Nenhum participante cadastrado para essa função!")
                 return
-            for i, part in enumerate(participantes_filtrados, 1):
-                self.telaVoto.mostra_mensagem(f"{i} - {part.participante.nome} ({part.funcao.nome} em '{part.filme.titulo}')")
-            idx_indicado = self.telaVoto.getInt("Escolha o participante votado (número): ") - 1
+
+            nomeParticipantes = []
+            for participante in participantes_filtrados:
+                nomeParticipantes.append(f'{participante.participante.nome} ({participante.funcao.nome} em {participante.filme.titulo})')
+            button, idx_indicado = self.telaVoto.selecionar(nomeParticipantes)
+            if button in (None, 'Cancelar'):
+                return None
             if idx_indicado < 0 or idx_indicado >= len(participantes_filtrados):
-                self.telaVoto.mostra_mensagem("Participante inválido.")
-                return
+                raise IndiceInvalidoException
             indicado = participantes_filtrados[idx_indicado]
 
         for voto in self.votos:
             if voto.membro == membro and voto.categoria == categoria:
-                self.telaVoto.mostra_mensagem("Este membro já votou nesta categoria!")
-                return
+                raise MembroJaVotouNessaCategoriaException
 
         novo_voto = Voto(membro, categoria, indicado)
         self.votos.append(novo_voto)
@@ -111,27 +123,43 @@ class ControladorVoto:
 
 
     def delVoto(self):
-        self.telaVoto.mostra_mensagem("\n--- Remover Voto ---")
         if not self.votos:
-            self.telaVoto.mostra_mensagem("Nenhum voto registrado!")
-            return
-        for i, voto in enumerate(self.votos, 1):
-            self.telaVoto.mostra_mensagem(f"{i} - {self._descricao_voto(voto)}")
-        idx = self.telaVoto.getInt("Escolha o voto para remover (número): ") - 1
+            raise SemCadastrosException
+        
+        nomeVotos = []
+        for voto in self.votos:
+            if isinstance(voto.indicado, Filme):
+                indicado = voto.indicado.titulo
+            else:
+                indicado = voto.indicado.participante.nome
+            nomeVotos.append(f'{indicado} indicado por {voto.membro.nome}')
+        button, idx = self.telaVoto.selecionar(nomeVotos)
+        if button in ('Cancelar', None):
+            return None
         if idx < 0 or idx >= len(self.votos):
-            self.telaVoto.mostra_mensagem("Índice inválido.")
-            return
+            raise IndiceInvalidoException
         removido = self.votos.pop(idx)
-        self.telaVoto.mostra_mensagem(f"✅ Voto removido: {self._descricao_voto(removido)}")
+        self.telaVoto.mostra_mensagem("✅ Voto removido com sucesso!")
 
     def listarVotos(self):
-        self.telaVoto.mostra_mensagem("\n--- Lista de Votos ---")
         if not self.votos:
-            self.telaVoto.mostra_mensagem("Nenhum voto registrado!")
-            return
-        for i, voto in enumerate(self.votos, 1):
-            self.telaVoto.mostra_mensagem(f"{i} - {self._descricao_voto(voto)}")
-        input()
+            raise SemCadastrosException
+        votosDetalhes = []
+        for voto in self.votos:
+            if isinstance(voto.indicado, Filme):
+                votosDetalhes.append({
+                    'Nome': voto.indicado.titulo,
+                    'Categoria': voto.categoria.nome,
+                    'Membro': voto.membro.nome
+                })
+            else: 
+                votosDetalhes.append({
+                    'Nome': voto.indicado.participante.nome,
+                    'Categoria': voto.categoria.nome,
+                    'Membro': voto.membro.nome
+                })
+        self.telaVoto.listarVotos(votosDetalhes)
+
 
     def detalharVoto(self):
         self.telaVoto.mostra_mensagem("\n--- Detalhar Voto ---")
@@ -142,8 +170,7 @@ class ControladorVoto:
             self.telaVoto.mostra_mensagem(f"{i} - {self._descricao_voto(voto)}")
         idx = self.telaVoto.getInt("Escolha o voto para detalhar (número): ") - 1
         if idx < 0 or idx >= len(self.votos):
-            self.telaVoto.mostra_mensagem("Índice inválido.")
-            return
+            raise IndiceInvalidoException
         voto = self.votos[idx]
         self.telaVoto.mostra_mensagem("Detalhes do Voto:")
         self.telaVoto.mostra_mensagem(f"Membro: {voto.membro.nome}")
@@ -171,10 +198,18 @@ class ControladorVoto:
                 contagem[chave] = contagem.get(chave, 0) + 1
 
             if contagem:
-                vencedor = max(contagem.items(), key=lambda x: x[1])
+                ordenados = sorted(contagem.items(), key=lambda x: x[1], reverse=True)
+                vencedor = ordenados[0]
+                lugar2 = ordenados[1] if len(ordenados) > 1 else None
+                lugar3 = ordenados[2] if len(ordenados) > 2 else None
+
                 resultados[categoria.nome] = {
-                    'vencedor': vencedor[0],
+                    '1° Lugar': vencedor[0],
                     'votos': vencedor[1],
+                    '2° Lugar': lugar2[0] if lugar2 else None,
+                    'votos_2': lugar2[1] if lugar2 else 0,
+                    '3° Lugar': lugar3[0] if lugar3 else None,
+                    'votos_3': lugar3[1] if lugar3 else 0,
                     'total_votos': len(votos_categoria)
                 }
         return resultados
