@@ -89,8 +89,8 @@ class TelaPessoas(Tela):
         sg.ChangeLookAndFeel('DarkTeal4')
 
         layout = [ [sg.Text('Lista de Pessoas', font=("Helvica", 20))] ]
-        for pessoas in pessoas:
-            layout.append([sg.Text(f'{pessoas.id} - {pessoas.nome}', font=("Helvica", 12))])
+        for i in range(len(pessoas)):
+            layout.append([sg.Text(f'{i+1} - {pessoas[i].nome}', font=("Helvica", 12))])
         layout.append([sg.Button('Confirmar'), sg.Cancel('Cancelar')])
         self.window = sg.Window('Lista de Pessoas').Layout(layout)
 

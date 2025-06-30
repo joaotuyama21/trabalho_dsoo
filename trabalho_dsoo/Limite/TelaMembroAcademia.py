@@ -100,8 +100,8 @@ class TelaMembroAcademia(Tela):
         sg.ChangeLookAndFeel('DarkTeal4')
 
         layout = [ [sg.Text('Lista de Membros', font=("Helvica", 20))] ]
-        for membro in membros:
-            layout.append([sg.Text(f'{membro.id} - {membro.nome}', font=("Helvica", 12))])
+        for i in range(len(membros)):
+            layout.append([sg.Text(f'{i+1} - {membros[i].nome}', font=("Helvica", 12))])
         layout.append([sg.Button('Confirmar'), sg.Cancel('Cancelar')])
         self.window = sg.Window('Lista de Membros').Layout(layout)
 
