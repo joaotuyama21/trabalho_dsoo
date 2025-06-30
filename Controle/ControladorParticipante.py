@@ -210,8 +210,6 @@ class ControladorParticipante:
 
         funcao = setters[codigoAtr]
         funcao(novoValor)
-        
-
 
     def detalharParticipante(self):
         self.telaParticipante.mostra_mensagem("\n--- Detalhar Participante ---")
